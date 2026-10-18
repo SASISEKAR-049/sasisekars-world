@@ -1,0 +1,2535 @@
+<!doctype html>
+<!--
+  ============================================================================
+  SASISEKAR R L — Editorial Portfolio ("3D motion reel" edition)
+  Single-file site: HTML + inline CSS + vanilla JS (no libraries).
+  Host as-is on GitHub Pages or Netlify.
+
+  PLACEHOLDERS TO REPLACE (search this file for each token):
+    [SITE_URL]            Your live site URL, e.g. https://username.github.io/
+    [OG_IMAGE_URL]        Absolute URL to a 1200×630 social preview image
+    [GITHUB_PROJECT_URL]  Smart Attendance System repository
+    [DEMO_URL]            Smart Attendance System demo / video
+    [CERT_LINK_1]         GenLab IB internship certificate
+    [CERT_LINK_2]         Entudio Pvt Ltd internship certificate
+    [LINKEDIN_URL]        LinkedIn profile
+    [GITHUB_URL]          GitHub profile
+    [RESUME_PDF_URL]      Résumé PDF, e.g. assets/resume.pdf
+  Images: search for "REPLACE:" to find the portrait and project placeholders.
+  Until a placeholder link is replaced, clicking it does nothing and logs a
+  warning in the browser console.
+
+  MOTION OVERVIEW
+    • 3D point-cloud scene behind the page. Each section sets its shape with
+      data-shape (sphere, helix, wave, cube, head, torus, galaxy) and its
+      position with data-side (-1 left, 0 centre, 1 right); the cloud morphs
+      between them as you scroll, spins faster with scroll speed and follows
+      the mouse.
+    • Intro title sequence on a rotating 3D cube (once per session; click or
+      any key skips), then the hero letters flip up in 3D.
+    • Sections tilt up into place like a camera move; cards tilt toward the
+      cursor; marquee bands lie back in perspective.
+    • Scroll progress bar, timecode HUD, word-by-word pull-quote, image
+      wipes, count-ups and an animated face-detection demo.
+    Everything switches off for prefers-reduced-motion, and all content
+    stays visible if JavaScript fails.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Sasisekar R L — AI &amp; Data Science Portfolio</title>
+  <meta name="description" content="Portfolio of Sasisekar R L, an AI &amp; Data Science undergraduate and Python &amp; Django backend developer from Tamil Nadu, India, building AI-powered and backend applications with Python, Django and Machine Learning.">
+  <meta name="author" content="Sasisekar R L">
+  <meta name="robots" content="index, follow">
+  <!-- REPLACE: uncomment once the site is live -->
+  <!-- <link rel="canonical" href="[SITE_URL]"> -->
+
+  <!-- ===== Open Graph / social ===== -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sasisekar R L">
+  <meta property="og:locale" content="en_IN">
+  <meta property="og:title" content="Sasisekar R L — AI &amp; Data Science Portfolio">
+  <meta property="og:description" content="AI &amp; Data Science undergraduate and Python &amp; Django backend developer. Building AI-powered and backend applications with Python, Django and Machine Learning.">
+  <meta property="og:url" content="[SITE_URL]">
+  <meta property="og:image" content="[OG_IMAGE_URL]">
+  <meta property="og:image:alt" content="Sasisekar R L — AI &amp; Data Science Portfolio">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sasisekar R L — AI &amp; Data Science Portfolio">
+  <meta name="twitter:description" content="Building AI-powered and backend applications with Python, Django and Machine Learning.">
+  <meta name="twitter:image" content="[OG_IMAGE_URL]">
+
+  <!-- ===== Theme / icon ===== -->
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#F4F4F2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0E0E0E" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230E0E0E'/%3E%3Ctext x='32' y='47' text-anchor='middle' font-family='Impact,Arial Narrow,sans-serif' font-size='44' fill='%23F4F4F2'%3ES%3C/text%3E%3Crect x='44' y='44' width='8' height='8' fill='%232F5BFF'/%3E%3C/svg%3E">
+
+  <!-- ===== Fonts: Anton (display), Manrope (body), JetBrains Mono (labels) ===== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&amp;family=JetBrains+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700&amp;display=swap">
+
+  <!-- Runs before paint: saved theme (no flash), JS flag, and whether to play
+       the intro. If the main script never finishes, the .js flag is removed
+       after 3 s so nothing stays hidden. -->
+  <script>
+    (function () {
+      var d = document.documentElement;
+      d.classList.add('js');
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'dark' || t === 'light') d.setAttribute('data-theme', t);
+      } catch (e) {}
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var seen = false;
+      try { seen = sessionStorage.getItem('introSeen') === '1'; } catch (e) {}
+      if (!reduce && !seen && !location.hash) d.classList.add('show-intro');
+      setTimeout(function () {
+        if (!window.__siteReady) d.classList.remove('js', 'show-intro');
+      }, 3000);
+    })();
+  </script>
+
+  <!-- Structured data for search engines -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Sasisekar R L",
+    "jobTitle": "AI & Data Science Undergraduate · Python & Django Backend Developer",
+    "email": "mailto:sasisekarsasi8@gmail.com",
+    "telephone": "+91 99528 36291",
+    "address": { "@type": "PostalAddress", "addressRegion": "Tamil Nadu", "addressCountry": "IN" },
+    "affiliation": { "@type": "CollegeOrUniversity", "name": "Stella Mary's College of Engineering" },
+    "knowsAbout": ["Artificial Intelligence", "Machine Learning", "Backend Development", "Python", "Django", "Django REST Framework", "OpenCV", "Data Analytics"]
+  }
+  </script>
+
+  <style>
+    /* ==========================================================================
+       0. DESIGN TOKENS
+       ========================================================================== */
+    :root {
+      /* Palette — light (default) */
+      --bg: #F4F4F2;
+      --fg: #0E0E0E;
+      --muted: #6B6B6B;
+      --dim: #8A8A87;            /* un-highlighted pull-quote words (≥3:1 for large text) */
+      --line: #D9D9D6;
+      --extrude: #C6C6C2;        /* side faces of 3D block letters */
+      --accent: #2F5BFF;
+      --accent-ink: #FFFFFF;     /* text placed on the accent colour */
+      --surface: #EAEAE7;        /* image placeholders */
+      --grain: 0.06;
+
+      /* Type */
+      --font-display: "Anton", "Bebas Neue", Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif;
+      --font-body: "Manrope", "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      --fs-body: clamp(16px, 0.25vw + 15px, 18px);
+      --fs-hero: clamp(56px, 21vw, 200px);
+      --fs-h2: clamp(56px, 11vw, 168px);
+
+      /* Layout */
+      --cols: 1;                              /* 1 → 6 → 12, see breakpoints */
+      --pad: clamp(16px, 4vw, 48px);          /* page side padding */
+      --gutter: clamp(16px, 2vw, 28px);       /* column gap */
+      --maxw: 1600px;
+      --header-h: 64px;
+      --space-section: clamp(72px, 11vw, 168px);
+
+      /* Motion */
+      --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+      --ease-cut: cubic-bezier(0.76, 0, 0.24, 1);   /* "film cut" wipes */
+
+      color-scheme: light;
+    }
+
+    /* Dark palette — follows the OS unless the visitor picked light */
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0E0E0E;
+        --fg: #F4F4F2;
+        --muted: #9A9A97;
+        --dim: #686865;
+        --line: #2A2A28;
+        --extrude: #3A3A37;
+        --accent: #6F8BFF;
+        --accent-ink: #0E0E0E;
+        --surface: #171716;
+        --grain: 0.08;
+        color-scheme: dark;
+      }
+    }
+    /* Dark palette — explicit choice via the toggle */
+    :root[data-theme="dark"] {
+      --bg: #0E0E0E;
+      --fg: #F4F4F2;
+      --muted: #9A9A97;
+      --dim: #686865;
+      --line: #2A2A28;
+      --extrude: #3A3A37;
+      --accent: #6F8BFF;
+      --accent-ink: #0E0E0E;
+      --surface: #171716;
+      --grain: 0.08;
+      color-scheme: dark;
+    }
+
+    @media (min-width: 720px)  { :root { --cols: 6; } }
+    @media (min-width: 1100px) { :root { --cols: 12; } }
+
+    /* ==========================================================================
+       1. RESET & BASE
+       ========================================================================== */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      scroll-padding-top: calc(var(--header-h) + 12px);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      html { scroll-behavior: smooth; }
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: var(--fs-body);
+      line-height: 1.6;
+      overflow-x: clip;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.4s var(--ease), color 0.4s var(--ease);
+    }
+
+    h1, h2, h3, p, ul, ol, figure, dl, dd { margin: 0; }
+    ul, ol { padding: 0; list-style: none; }
+    img, svg, video { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+    table { border-collapse: collapse; }
+
+    ::selection { background: var(--accent); color: var(--accent-ink); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    main:focus { outline: none; }
+
+    .sr-only {
+      position: absolute !important;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0 0 0 0);
+      white-space: nowrap; border: 0;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: 8px; left: var(--pad);
+      z-index: 100;
+      padding: 12px 16px;
+      background: var(--fg); color: var(--bg);
+      font-family: var(--font-mono); font-size: 13px;
+      transform: translateY(-200%);
+    }
+    .skip-link:focus { transform: none; }
+
+    /* ==========================================================================
+       2. LAYOUT — container + 12/6/1 column grid
+       Mobile-first: every grid child spans the full row until a breakpoint
+       assigns it columns.
+       ========================================================================== */
+    .wrap {
+      width: 100%;
+      max-width: var(--maxw);
+      margin-inline: auto;
+      padding-inline: var(--pad);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+      column-gap: var(--gutter);
+    }
+    .grid > * { grid-column: 1 / -1; min-width: 0; }
+
+    .section {
+      border-top: 1px solid var(--line);
+      padding-block: var(--space-section);
+    }
+    .section > .wrap { transform-origin: 50% 0; }
+
+    /* ==========================================================================
+       3. TYPOGRAPHY PRIMITIVES
+       ========================================================================== */
+    .display {
+      font-family: var(--font-display);
+      font-weight: 400;
+      text-transform: uppercase;
+      line-height: 0.88;
+      letter-spacing: -0.01em;
+      overflow-wrap: break-word;
+      text-wrap: balance;
+    }
+    /* 3D block letters: stacked shadows form the side faces */
+    .extrude {
+      text-shadow:
+        0.006em 0.006em 0 var(--extrude),
+        0.012em 0.012em 0 var(--extrude),
+        0.018em 0.018em 0 var(--extrude),
+        0.024em 0.024em 0 var(--extrude),
+        0.030em 0.030em 0 var(--extrude),
+        0.036em 0.036em 0 var(--extrude),
+        0.042em 0.042em 0 var(--extrude),
+        0.048em 0.048em 0 var(--extrude);
+    }
+    .label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      line-height: 1.5;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* Animated underline for text links */
+    .link {
+      background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+      padding-bottom: 2px;
+      transition: background-size 0.4s var(--ease), color 0.2s ease;
+    }
+    .link:hover, .link:focus-visible { background-size: 100% 1px; color: var(--accent); }
+
+    /* Small monospace action link, e.g. "View Certificate ↗" */
+    .link--mono {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* ==========================================================================
+       4. BUTTONS & TAGS — square, hairline, no rounded corners
+       ========================================================================== */
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-height: 48px;
+      padding: 0 22px;
+      overflow: hidden;
+      isolation: isolate;
+      border: 1px solid var(--fg);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: color 0.35s var(--ease), border-color 0.35s var(--ease), transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+    }
+    /* Fill that wipes up from the bottom on hover */
+    .btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.45s var(--ease-cut);
+    }
+    .btn:hover::before { transform: none; }
+    /* Lifts off the page on hover, presses in on click */
+    .btn:hover { transform: translate(-3px, -3px); box-shadow: 3px 3px 0 var(--extrude); }
+    .btn:active { transform: none; box-shadow: none; }
+    .btn--solid { background: var(--fg); color: var(--bg); }
+    .btn--solid::before { background: var(--accent); }
+    .btn--solid:hover { border-color: var(--accent); color: var(--accent-ink); }
+    .btn--line::before { background: var(--fg); }
+    .btn--line:hover { color: var(--bg); }
+    .btn__arrow { display: inline-block; transition: transform 0.35s var(--ease); }
+    .btn:hover .btn__arrow { transform: translateX(4px); }
+    .btn:hover .btn__arrow--down { transform: translateY(3px); }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+    }
+
+    /* Status dot */
+    .dot { color: var(--accent); }
+    @media (prefers-reduced-motion: no-preference) {
+      .dot { animation: pulse 2.4s ease-in-out infinite; }
+    }
+
+    /* ==========================================================================
+       5. HEADER & NAVIGATION
+       ========================================================================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      transition: background-color 0.4s var(--ease);
+    }
+    @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+      .site-header {
+        background: color-mix(in srgb, var(--bg) 85%, transparent);
+        -webkit-backdrop-filter: saturate(1.2) blur(14px);
+        backdrop-filter: saturate(1.2) blur(14px);
+      }
+      .menu-open .site-header { background: var(--bg); }
+    }
+    .site-header__inner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: var(--header-h);
+    }
+    .brand {
+      font-family: var(--font-display);
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      margin-right: auto;
+    }
+    .brand:hover { color: var(--accent); }
+
+    /* Scroll progress — the "playhead" */
+    .progress {
+      position: absolute;
+      left: 0; right: 0; bottom: -1px;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      pointer-events: none;
+    }
+    html:not(.js) .progress { display: none; }
+
+    .nav { display: none; }
+    .nav__list { display: flex; gap: clamp(18px, 2.2vw, 36px); }
+    .nav__link {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .nav__link.is-active { color: var(--accent); }
+
+    .site-header__actions { display: flex; align-items: center; gap: 8px; }
+    .theme-toggle,
+    .menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      min-width: 44px;
+      justify-content: center;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+    .theme-toggle:hover, .menu-toggle:hover { border-color: var(--fg); }
+    .theme-toggle__icon {
+      width: 12px; height: 12px;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      background: linear-gradient(90deg, currentColor 50%, transparent 50%);
+      transition: transform 0.6s var(--ease);
+    }
+    .theme-toggle:hover .theme-toggle__icon { transform: rotateY(180deg); }
+    .menu-toggle__text { min-width: 5ch; text-align: center; }
+
+    @media (max-width: 479.98px) {
+      .theme-toggle__text { display: none; }   /* icon-only on small phones; aria-label stays */
+    }
+    @media (min-width: 900px) {
+      .nav { display: block; }
+      .menu-toggle { display: none; }
+      .brand { margin-right: 0; }
+      .nav { margin-left: auto; margin-right: clamp(8px, 1.5vw, 24px); }
+    }
+
+    /* No-JS fallback: show plain links, hide the controls that need JS */
+    html:not(.js) .menu-toggle,
+    html:not(.js) .theme-toggle { display: none; }
+    @media (max-width: 899.98px) {
+      html:not(.js) .site-header__inner { height: auto; flex-wrap: wrap; padding-block: 14px; }
+      html:not(.js) .nav { display: block; width: 100%; }
+      html:not(.js) .nav__list { flex-wrap: wrap; gap: 8px 18px; }
+    }
+
+    /* Full-screen mobile menu (sits under the sticky header) */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 40px;
+      padding: calc(var(--header-h) + 24px) var(--pad) 28px;
+      background: var(--bg);
+      overflow-y: auto;
+      visibility: hidden;
+      clip-path: inset(0 0 100% 0);
+      perspective: 900px;
+      transition: clip-path 0.6s var(--ease-cut), visibility 0s linear 0.6s;
+    }
+    .mobile-menu.is-open {
+      visibility: visible;
+      clip-path: inset(0 0 0 0);
+      transition: clip-path 0.6s var(--ease-cut), visibility 0s;
+    }
+    .mobile-menu__list li { border-top: 1px solid var(--line); }
+    .mobile-menu__list li:last-child { border-bottom: 1px solid var(--line); }
+    .mobile-menu__link {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0 10px;
+      font-family: var(--font-display);
+      font-size: clamp(44px, 13vw, 88px);
+      line-height: 0.95;
+      text-transform: uppercase;
+    }
+    .mobile-menu__link.is-active { color: var(--accent); }
+    .mobile-menu__foot { display: grid; gap: 8px; }
+    .mobile-menu__foot a { font-weight: 600; }
+    html.menu-open { overflow: hidden; }
+    @media (min-width: 900px) { .mobile-menu { display: none; } }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .mobile-menu__list li {
+        opacity: 0;
+        transform: rotateX(-70deg);
+        transform-origin: 50% 0;
+        transition: opacity 0.5s var(--ease), transform 0.8s var(--ease);
+      }
+      .mobile-menu.is-open .mobile-menu__list li {
+        opacity: 1;
+        transform: none;
+        transition-delay: calc(var(--i, 0) * 70ms + 200ms);
+      }
+    }
+
+    /* ==========================================================================
+       6. INTRO TITLE SEQUENCE — words on the faces of a rotating 3D cube
+       (JS + motion only; plays once per session)
+       ========================================================================== */
+    .intro { display: none; }
+    html.show-intro { overflow: hidden; }
+    .js.show-intro .intro {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(20px, 3vw, 40px) var(--pad);
+      background: var(--fg);
+      color: var(--bg);
+      cursor: pointer;
+      transform-origin: 50% 0;
+    }
+    .intro .label { color: color-mix(in srgb, var(--bg) 62%, var(--fg)); }
+    .intro__row { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
+    .intro__stage {
+      position: relative;
+      height: 1em;
+      font-size: clamp(64px, 17vw, 240px);
+      perspective: 1200px;
+    }
+    .intro__card {
+      position: absolute;
+      left: 0; top: 0.06em;
+      line-height: 0.88;
+      opacity: 0;
+      transform: rotateX(-90deg);
+      transform-origin: 50% 50% -0.5em;     /* rotate around the cube's centre */
+      backface-visibility: hidden;
+    }
+    .intro__card--accent { color: var(--accent); }
+    .intro__card.is-on { opacity: 1; transform: none; transition: transform 0.7s var(--ease), opacity 0.3s ease; }
+    .intro__card.is-off { opacity: 0; transform: rotateX(90deg); transition: transform 0.7s var(--ease), opacity 0.5s ease 0.1s; }
+    .intro__bar {
+      height: 1px;
+      margin-bottom: 16px;
+      background: currentColor;
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+    .intro__count { font-size: clamp(48px, 9vw, 140px); line-height: 0.85; font-variant-numeric: tabular-nums; }
+    /* Exit: the whole title card tips back and falls away into depth */
+    .intro.is-leaving {
+      opacity: 0;
+      transform: perspective(1400px) rotateX(-72deg) translateZ(-200px);
+      transition: transform 1s var(--ease-cut), opacity 0.7s ease 0.25s;
+    }
+
+    /* ==========================================================================
+       7. HERO
+       ========================================================================== */
+    .hero { padding-block: clamp(20px, 3vw, 40px) clamp(32px, 5vw, 64px); }
+    .hero__inner {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(28px, 4vw, 56px);
+      min-height: calc(100vh - var(--header-h) - clamp(52px, 8vw, 104px));
+      min-height: calc(100svh - var(--header-h) - clamp(52px, 8vw, 104px));
+    }
+    .hero__top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .hero__top .label:first-child { color: var(--fg); }
+    .hero__scroll { display: none; }
+    @media (min-width: 720px) { .hero__scroll { display: block; } }
+
+    .hero__stage { margin-top: auto; }
+    .hero__name { font-size: var(--fs-hero); }
+    .line { display: block; }
+    @media (min-width: 720px) {
+      .hero__name .line:nth-child(2) { text-align: right; }
+    }
+
+    .hero__intro { margin-top: clamp(24px, 4vw, 40px); max-width: 640px; }
+    .hero__role {
+      font-size: clamp(18px, 1.5vw, 22px);
+      font-weight: 600;
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+    }
+    .hero__tagline { margin-top: 10px; color: var(--muted); max-width: 46ch; }
+
+    /* Desktop: role + tagline sit in the empty band left of the right-aligned "R L" */
+    @media (min-width: 1100px) {
+      .hero__stage { display: grid; }
+      .hero__name, .hero__intro { grid-area: 1 / 1; }
+      .hero__intro {
+        align-self: end;
+        max-width: min(46%, 560px);
+        margin: 0;
+        padding-bottom: 6px;
+      }
+    }
+
+    .hero__bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px 32px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+    }
+    .hero__status { display: flex; flex-wrap: wrap; gap: 8px 16px; color: var(--fg); }
+    .hero__status li { display: flex; align-items: center; gap: 8px; }
+    .hero__status li + li::before { content: "|"; color: var(--muted); margin-right: 8px; }
+    .hero__cta { display: flex; flex-wrap: wrap; gap: 12px; }
+    @media (max-width: 559.98px) {
+      .hero__status { flex-direction: column; }
+      .hero__status li + li::before { display: none; }
+      .hero__cta, .hero__cta .btn { width: 100%; }
+      .hero__cta .btn { flex: 1 1 auto; }
+    }
+
+    /* Typewriter caret for the role line */
+    .caret {
+      display: inline-block;
+      width: 0.5em;
+      height: 1em;
+      margin-left: 3px;
+      vertical-align: -0.14em;
+      background: var(--accent);
+      opacity: 0;
+    }
+
+    /* Hero choreography — starts when JS adds .is-playing (after the intro) */
+    @media (prefers-reduced-motion: no-preference) {
+      /* The name block leans toward the cursor */
+      .js .hero__stage, .js .contact__stage {
+        transform: perspective(1400px) rotateY(calc(var(--mx, 0) * 5deg)) rotateX(calc(var(--my, 0) * -4deg));
+        transition: transform 0.4s var(--ease);
+      }
+      .js .contact__stage { transform: perspective(1400px) rotateY(calc(var(--mx, 0) * -6deg)) rotateX(calc(var(--my, 0) * 5deg)); }
+
+      .js.is-playing .hero__name .split-word .char {   /* extra class so it beats the generic rule in §19 */
+        transition-duration: 1.4s, 0.5s;
+        transition-delay: calc(var(--ci) * 60ms + 80ms);
+      }
+      .js .hero__role .tc { opacity: 0; }
+      .js.is-playing .hero__role .tc {
+        opacity: 1;
+        transition: opacity 0s linear;
+        transition-delay: calc(0.9s + var(--ci) * 16ms);
+      }
+      .js.is-playing .caret {
+        animation: blink 0.9s steps(1) calc(0.9s + var(--n, 0) * 16ms) 6 both;
+      }
+      .js .hero-fade { opacity: 0; transform: perspective(900px) rotateX(-40deg) translateY(18px); transform-origin: 50% 0; }
+      .js.is-playing .hero-fade {
+        opacity: 1;
+        transform: none;
+        transition: opacity 0.9s var(--ease), transform 1.1s var(--ease);
+        transition-delay: var(--delay, 0s);
+      }
+    }
+
+    /* ==========================================================================
+       8. MARQUEE BANDS — lie back in 3D, react to scroll velocity (JS)
+       ========================================================================== */
+    .marquee {
+      border-top: 1px solid var(--line);
+      padding-block: clamp(16px, 2.2vw, 30px);
+      overflow: hidden;
+      user-select: none;
+      perspective: 700px;
+    }
+    .marquee__track { display: flex; width: max-content; will-change: transform; }
+    .marquee__group { display: flex; align-items: center; flex-shrink: 0; }
+    .marquee__item {
+      padding-inline: 0.22em;
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 128px);
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .marquee__item--outline { color: transparent; -webkit-text-stroke: 0.016em var(--fg); }
+    @supports not (-webkit-text-stroke: 1px black) {
+      .marquee__item--outline { color: var(--muted); }
+    }
+    .marquee__sep { padding-inline: 0.3em; color: var(--accent); font-size: clamp(22px, 3vw, 46px); }
+
+    /* ==========================================================================
+       9. SECTION HEADER — "[ 01 ] (meta)" + giant title
+       ========================================================================== */
+    .section-head {
+      row-gap: 16px;
+      align-items: start;
+      margin-bottom: clamp(40px, 6vw, 96px);
+    }
+    .section-head__aside { display: flex; justify-content: space-between; gap: 16px; }
+    .section-head__aside .label:first-child { color: var(--fg); }
+    .section-head__title { font-size: var(--fs-h2); }
+    @media (min-width: 1100px) {
+      .section-head__aside {
+        grid-column: 1 / 4;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 4px;
+        padding-top: 10px;
+      }
+      .section-head__title { grid-column: 4 / -1; }
+    }
+
+    /* ==========================================================================
+       10. ABOUT
+       ========================================================================== */
+    .pullquote {
+      max-width: 18ch;
+      margin-bottom: clamp(48px, 7vw, 112px);
+      font-size: clamp(30px, 5.2vw, 80px);
+      font-weight: 600;
+      line-height: 1.04;
+      letter-spacing: -0.035em;
+      text-wrap: balance;
+    }
+    .pullquote em { font-style: normal; color: var(--accent); }
+    @media (min-width: 1100px) { .pullquote { text-indent: -0.4em; } }  /* hanging quote mark */
+
+    .about__grid { row-gap: 48px; }
+    .about__bio p { font-size: clamp(17px, 1.3vw, 20px); line-height: 1.65; }
+    .about__bio .label { margin-bottom: 16px; }
+    .about__aside { display: grid; gap: 40px; }
+    .about__group h3 { margin-bottom: 12px; }
+    .stack-list li {
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .stack-list li:last-child { border-bottom: 1px solid var(--line); }
+
+    @media (min-width: 720px) {
+      .portrait { grid-column: 1 / 4; }
+      .about__bio { grid-column: 4 / -1; }
+      .about__aside { grid-template-columns: 1fr 1fr; column-gap: var(--gutter); }
+    }
+    @media (min-width: 1100px) {
+      .portrait { grid-column: 1 / 5; }
+      .about__bio { grid-column: 6 / 10; }
+      .about__aside { grid-column: 10 / -1; grid-template-columns: 1fr; }
+    }
+
+    /* Image frames & placeholders (portrait + project) */
+    .media {
+      position: relative;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--line);
+    }
+    .media--portrait { aspect-ratio: 4 / 5; }
+    .media--wide { aspect-ratio: 16 / 9; }
+    .media img, .media video { width: 100%; height: 100%; object-fit: cover; }
+    .media--portrait img { filter: grayscale(1) contrast(1.05); }   /* greyscale portrait */
+    /* Light glare that follows the cursor on tilting cards */
+    .media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), color-mix(in srgb, var(--accent) 22%, transparent), transparent 55%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .media.is-tilting::after { opacity: 1; }
+
+    .placeholder { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); }
+    .placeholder__mark {
+      font-family: var(--font-display);
+      font-size: clamp(72px, 12vw, 180px);
+      line-height: 1;
+      color: color-mix(in srgb, var(--fg) 9%, var(--surface));
+      user-select: none;
+    }
+    /* Viewfinder corner brackets */
+    .frame {
+      position: absolute;
+      inset: clamp(10px, 1.6vw, 18px);
+      --c: var(--muted);
+      --s: clamp(12px, 1.6vw, 20px);
+      background:
+        linear-gradient(var(--c), var(--c)) top left / var(--s) 1px no-repeat,
+        linear-gradient(var(--c), var(--c)) top left / 1px var(--s) no-repeat,
+        linear-gradient(var(--c), var(--c)) top right / var(--s) 1px no-repeat,
+        linear-gradient(var(--c), var(--c)) top right / 1px var(--s) no-repeat,
+        linear-gradient(var(--c), var(--c)) bottom left / var(--s) 1px no-repeat,
+        linear-gradient(var(--c), var(--c)) bottom left / 1px var(--s) no-repeat,
+        linear-gradient(var(--c), var(--c)) bottom right / var(--s) 1px no-repeat,
+        linear-gradient(var(--c), var(--c)) bottom right / 1px var(--s) no-repeat;
+      pointer-events: none;
+    }
+    .ph-label { position: absolute; z-index: 1; font-size: 11px; }
+    .ph-label--tl { top: clamp(20px, 2.6vw, 34px); left: clamp(20px, 2.6vw, 34px); }
+    .ph-label--tr { top: clamp(20px, 2.6vw, 34px); right: clamp(20px, 2.6vw, 34px); }
+    .ph-label--bl { bottom: clamp(20px, 2.6vw, 34px); left: clamp(20px, 2.6vw, 34px); }
+    .ph-label--br { bottom: clamp(20px, 2.6vw, 34px); right: clamp(20px, 2.6vw, 34px); }
+    @media (max-width: 719.98px) { .ph-label--tr, .ph-label--br { display: none; } }
+
+    .figcap { display: flex; justify-content: space-between; gap: 16px; margin-top: 12px; }
+
+    /* ==========================================================================
+       11. EDUCATION — editorial table (stacks on mobile)
+       ========================================================================== */
+    .edu { width: 100%; border-top: 1px solid var(--fg); }
+    .edu thead th {
+      padding: 14px 16px 14px 0;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      font-weight: 500;
+    }
+    .edu td, .edu tbody th {
+      padding: clamp(22px, 2.6vw, 36px) 16px clamp(22px, 2.6vw, 36px) 0;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: baseline;
+      font-weight: 400;
+    }
+    .edu__year {
+      width: 24%;
+      font-family: var(--font-display);
+      font-size: clamp(30px, 3.4vw, 52px);
+      line-height: 1;
+      white-space: nowrap;
+      transition: color 0.3s ease;
+    }
+    .edu__inst { width: 32%; font-weight: 700 !important; font-size: clamp(17px, 1.4vw, 22px); line-height: 1.3; letter-spacing: -0.01em; }
+    .edu__qual { width: 30%; line-height: 1.45; }
+    .edu__score {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      text-align: right !important;
+      white-space: nowrap;
+      padding-right: 0 !important;
+      font-variant-numeric: tabular-nums;
+    }
+    .edu thead th:last-child { text-align: right; padding-right: 0; }
+    .edu tbody tr:hover .edu__year { color: var(--accent); }
+
+    @media (max-width: 719.98px) {
+      .edu thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+      .edu, .edu tbody, .edu tr, .edu td, .edu tbody th { display: block; width: auto; }
+      .edu tr { display: grid; gap: 8px; padding: 24px 0; border-bottom: 1px solid var(--line); }
+      .edu td, .edu tbody th { padding: 0 !important; border: 0; }
+      .edu__score { text-align: left !important; }
+      .edu td[data-label]::before {
+        content: attr(data-label) " — ";
+        font-family: var(--font-mono);
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+    }
+
+    /* ==========================================================================
+       12. SKILLS
+       ========================================================================== */
+    .skill {
+      display: grid;
+      align-content: start;
+      gap: 16px;
+      padding: 22px 0 44px;
+      border-top: 1px solid var(--line);
+    }
+    .skill__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .skill__title { font-size: clamp(20px, 1.7vw, 26px); font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
+    @media (min-width: 720px)  { .skill { grid-column: span 3; } }
+    @media (min-width: 1100px) { .skill { grid-column: span 4; } }
+
+    /* ==========================================================================
+       13. PROJECTS — repeatable <article class="project"> block
+       ========================================================================== */
+    .project + .project {
+      margin-top: var(--space-section);
+      padding-top: var(--space-section);
+      border-top: 1px solid var(--line);
+    }
+    .project__meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px 24px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--fg);
+    }
+    .project__meta .label:last-child { color: var(--fg); }
+    .project__title { margin-top: clamp(24px, 3vw, 44px); font-size: clamp(48px, 9.5vw, 152px); }
+    .project__tags { margin-top: clamp(20px, 2.4vw, 32px); }
+    .project__media { margin-top: clamp(32px, 4vw, 56px); }
+    .project__body { margin-top: clamp(40px, 5vw, 72px); row-gap: 40px; }
+    .project__intro { font-size: clamp(21px, 2vw, 30px); font-weight: 600; line-height: 1.3; letter-spacing: -0.02em; }
+    .project__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .highlights { display: grid; column-gap: var(--gutter); }
+    .highlight { display: grid; align-content: start; gap: 10px; padding: 20px 0 28px; border-top: 1px solid var(--line); }
+    @media (min-width: 720px) { .highlights { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1100px) {
+      .project__lead { grid-column: 1 / 6; }
+      .highlights { grid-column: 7 / -1; }
+    }
+    @media (max-width: 559.98px) {
+      .project__actions .btn { flex: 1 1 100%; }
+    }
+
+    /* Computer-vision placeholder artwork */
+    .cv-art { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--muted); }
+    .cv-art__subject { fill: none; stroke: currentColor; stroke-width: 2; opacity: 0.6; }
+    .cv-art__box { fill: none; stroke: var(--accent); stroke-width: 3; }
+    .cv-art__tag { fill: var(--accent); }
+    .cv-art__text { fill: var(--accent-ink); font-family: var(--font-mono); font-size: 22px; letter-spacing: 0.06em; }
+    .cv-art__pt { fill: var(--accent); }
+    .cv-art__scan { fill: var(--accent); opacity: 0; }
+
+    /* ==========================================================================
+       14. EXPERIENCE — numbered list, big years on the left
+       ========================================================================== */
+    .xp { border-top: 1px solid var(--fg); }
+    .xp__item {
+      row-gap: 14px;
+      align-items: baseline;
+      padding-block: clamp(28px, 4vw, 52px);
+      border-bottom: 1px solid var(--line);
+    }
+    .xp__year {
+      font-family: var(--font-display);
+      font-size: clamp(56px, 8vw, 128px);
+      line-height: 0.85;
+      transition: color 0.3s ease;
+    }
+    .xp__item:hover .xp__year { color: var(--accent); }
+    .xp__role { margin-top: 6px; font-size: clamp(22px, 2.4vw, 36px); font-weight: 700; line-height: 1.15; letter-spacing: -0.025em; }
+    .xp__org { margin-top: 6px; color: var(--muted); font-weight: 500; }
+    @media (min-width: 720px) {
+      .xp__year { grid-column: 1 / 3; }
+      .xp__main, .xp__aside { grid-column: 3 / -1; }
+    }
+    @media (min-width: 1100px) {
+      .xp__year { grid-column: 1 / 4; }
+      .xp__main { grid-column: 4 / 10; }
+      .xp__aside { grid-column: 10 / -1; justify-self: end; }
+    }
+
+    /* ==========================================================================
+       15. CERTIFICATIONS + ACHIEVEMENTS (side by side on desktop)
+       ========================================================================== */
+    .split { row-gap: clamp(72px, 10vw, 120px); }
+    @media (min-width: 1100px) {
+      .split > :first-child { grid-column: 1 / 7; }
+      .split > :last-child { grid-column: 7 / -1; padding-left: var(--gutter); border-left: 1px solid var(--line); }
+    }
+    .sub-head { display: grid; gap: 14px; margin-bottom: clamp(28px, 3vw, 44px); }
+    .sub-head .label { display: flex; justify-content: space-between; gap: 16px; }
+    .sub-head .label span:first-child { color: var(--fg); }
+    .sub-title { font-size: clamp(40px, 4.6vw, 88px); }
+
+    .rows { border-top: 1px solid var(--fg); }
+    .row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 4px 16px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .row__name { font-size: clamp(18px, 1.5vw, 22px); font-weight: 700; line-height: 1.3; letter-spacing: -0.015em; }
+    .row__year { justify-self: end; color: var(--fg); }
+    .row__issuer { grid-column: 1 / -1; color: var(--muted); }
+
+    .ach { border-top: 1px solid var(--fg); }
+    .ach li {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr);
+      gap: 16px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: clamp(17px, 1.4vw, 20px);
+      line-height: 1.45;
+    }
+    .ach .label { padding-top: 4px; }
+
+    /* ==========================================================================
+       16. CONTACT
+       ========================================================================== */
+    .contact { padding-bottom: clamp(56px, 8vw, 112px); }
+    .contact__kicker { display: flex; justify-content: space-between; gap: 16px; margin-bottom: clamp(24px, 3vw, 40px); }
+    .contact__kicker span:first-child { color: var(--fg); }
+    .contact__title { font-size: clamp(56px, 14.5vw, 200px); }
+    .contact__sub { max-width: 44ch; margin-top: clamp(24px, 3vw, 40px); font-size: clamp(18px, 1.6vw, 24px); line-height: 1.45; }
+    .contact__email-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px 24px;
+      margin-top: clamp(48px, 6vw, 88px);
+      padding-block: clamp(20px, 2.4vw, 32px);
+      border-block: 1px solid var(--fg);
+    }
+    .contact__email {
+      font-size: clamp(24px, 5.4vw, 80px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+      overflow-wrap: anywhere;
+      user-select: text;
+    }
+    .copy { min-width: 148px; }
+    .contact__list { row-gap: 28px; margin-top: clamp(32px, 4vw, 56px); }
+    .contact__item { display: grid; gap: 10px; align-content: start; }
+    .contact__item dd { font-size: clamp(18px, 1.5vw, 22px); font-weight: 600; }
+    .contact__item dd .btn { font-weight: 500; }
+    .sep { color: var(--muted); margin-inline: 8px; }
+    @media (min-width: 720px)  { .contact__item { grid-column: span 2; } }
+    @media (min-width: 1100px) { .contact__item { grid-column: span 4; } }
+
+    /* ==========================================================================
+       17. FOOTER
+       ========================================================================== */
+    .footer { border-top: 1px solid var(--line); padding-block: 28px; }
+    .footer__inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px 32px;
+      font-size: 14px;
+    }
+    .footer__clock { color: var(--fg); }
+    .footer__clock time { font-variant-numeric: tabular-nums; }
+
+    /* ==========================================================================
+       18. 3D SCENE CANVAS, VIDEO HUD, FILM GRAIN
+       ========================================================================== */
+    .scene3d { display: none; }
+    .hud { display: none; }
+    .grain { display: none; }
+
+    @media (min-width: 900px) {
+      .js .hud {
+        position: fixed;
+        left: var(--pad);
+        bottom: 16px;
+        z-index: 45;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 8px 12px;
+        background: var(--bg);
+        border: 1px solid var(--line);
+        color: var(--fg);
+        font-size: 11px;
+        pointer-events: none;
+      }
+    }
+    .hud__tc { font-variant-numeric: tabular-nums; }
+    .hud__total { color: var(--muted); }
+
+    @media (prefers-reduced-motion: no-preference) {
+      /* Sits behind all content; sections are transparent so it shows through */
+      .js .scene3d {
+        display: block;
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        pointer-events: none;
+      }
+      .js .grain {
+        display: block;
+        position: fixed;
+        inset: -8%;
+        z-index: 300;
+        pointer-events: none;
+        opacity: var(--grain);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        animation: grain 0.8s steps(5) infinite;
+      }
+    }
+
+    /* ==========================================================================
+       19. SCROLL & REVEAL CHOREOGRAPHY (3D)
+       Every hidden starting state lives behind `.js` + no-preference, so the
+       page is fully visible without JS or with reduced motion.
+       ========================================================================== */
+    .split-word { display: inline-block; white-space: nowrap; vertical-align: top; }
+    .char { display: inline-block; }
+    .line-in { position: relative; }
+
+    @media (prefers-reduced-motion: no-preference) {
+      /* Generic block reveal */
+      .js .reveal {
+        opacity: 0;
+        transform: translate3d(0, 28px, 0);
+        transition: opacity 0.9s var(--ease), transform 1s var(--ease);
+        transition-delay: calc(var(--d, 0) * 90ms);
+      }
+      .js .reveal.is-visible { opacity: 1; transform: none; }
+
+      /* 3D variants of the reveal */
+      .js .xp__item.reveal { transform: perspective(1200px) rotateX(-45deg) translate3d(0, 40px, 0); transform-origin: 50% 0; }
+      .js .skill.reveal { transform: perspective(1000px) rotateY(-40deg) translate3d(40px, 0, 0); transform-origin: 0 50%; }
+      .js .project__media.reveal { transform: perspective(1600px) rotateX(28deg) translate3d(0, 80px, -160px); transform-origin: 50% 100%; transition-duration: 1.2s; }
+      .js .portrait.reveal { transform: perspective(1200px) rotateY(28deg) translate3d(-30px, 0, -80px); transform-origin: 100% 50%; transition-duration: 1.2s; }
+      .js .contact__email-row.reveal { transform: perspective(1200px) rotateX(-60deg); transform-origin: 50% 0; }
+      .js .xp__item.reveal.is-visible,
+      .js .skill.reveal.is-visible,
+      .js .project__media.reveal.is-visible,
+      .js .portrait.reveal.is-visible,
+      .js .contact__email-row.reveal.is-visible { transform: none; }
+
+      /* Kinetic headings: each letter flips up from lying flat, in 3D */
+      .js [data-split] .char {
+        opacity: 0;
+        transform: perspective(700px) rotateX(-100deg) translateZ(0.1em);
+        transform-origin: 50% 100%;
+      }
+      .js .is-visible [data-split] .char,
+      .js [data-split].is-visible .char,
+      .js.is-playing .hero__name .char {
+        opacity: 1;
+        transform: perspective(700px) rotateX(0deg);
+        transition: transform 1.1s var(--ease), opacity 0.4s ease;
+        transition-delay: calc(var(--ci) * 35ms + 100ms);
+      }
+
+      /* Pull-quote fills in word by word as you scroll */
+      .js [data-scrub] .w { color: var(--dim); transition: color 0.35s ease; }
+      .js [data-scrub] .w.is-lit { color: inherit; }
+
+      /* Image wipe + cursor tilt on the frame itself */
+      .js .reveal .media {
+        clip-path: inset(100% 0 0 0);
+        transition: clip-path 1.3s var(--ease-cut) 0.15s, transform 0.6s var(--ease);
+      }
+      .js .reveal.is-visible .media { clip-path: inset(0 0 0 0); }
+      .js .reveal .media > * { transform: scale(1.15); transition: transform 1.8s var(--ease) 0.15s; }
+      .js .reveal.is-visible .media > * { transform: none; }
+
+      /* Staggered tags flip in */
+      .js .reveal .tag {
+        opacity: 0;
+        transform: perspective(500px) rotateX(-90deg);
+        transform-origin: 50% 100%;
+        transition: opacity 0.4s var(--ease), transform 0.7s var(--ease);
+        transition-delay: calc(var(--ti, 0) * 50ms + 0.3s);
+      }
+      .js .reveal.is-visible .tag { opacity: 1; transform: none; }
+
+      /* Hairlines draw themselves left → right */
+      .js .line-in { border-color: transparent; }
+      .js .line-in::after {
+        content: "";
+        position: absolute;
+        left: 0; right: 0; bottom: -1px;
+        height: 1px;
+        background: var(--line);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 1.2s var(--ease-cut);
+        transition-delay: calc(var(--li, 0) * 0.12s + 0.1s);
+      }
+      .js .line-in--top::after { top: -1px; bottom: auto; }
+      .js .is-visible.line-in::after,
+      .js .is-visible .line-in::after { transform: none; }
+
+      /* Highlights fold down one after another */
+      .js .reveal .highlight > * {
+        opacity: 0;
+        transform: perspective(800px) rotateX(-60deg);
+        transform-origin: 50% 0;
+        transition: opacity 0.7s var(--ease), transform 0.9s var(--ease);
+        transition-delay: calc(var(--li, 0) * 0.12s + 0.3s);
+      }
+      .js .reveal.is-visible .highlight > * { opacity: 1; transform: none; }
+
+      /* Education rows */
+      .js .edu.reveal tbody tr { opacity: 0; transform: translateY(24px); transition: opacity 0.8s var(--ease), transform 0.9s var(--ease); }
+      .js .edu.reveal.is-visible tbody tr { opacity: 1; transform: none; }
+      .js .edu.reveal.is-visible tbody tr:nth-child(2) { transition-delay: 0.14s; }
+      .js .edu.reveal.is-visible tbody tr:nth-child(3) { transition-delay: 0.28s; }
+
+      /* Face-detection demo on the project placeholder */
+      .js .cv-art__subject, .js .cv-art__box { stroke-dasharray: 1; stroke-dashoffset: 1; }
+      .js .is-visible .cv-art__subject { stroke-dashoffset: 0; transition: stroke-dashoffset 1.6s var(--ease) 0.5s; }
+      .js .is-visible .cv-art__box { stroke-dashoffset: 0; transition: stroke-dashoffset 1.2s var(--ease-cut) 1.2s; }
+      .js .cv-art__tag, .js .cv-art__text { opacity: 0; }
+      .js .is-visible .cv-art__tag, .js .is-visible .cv-art__text { opacity: 1; transition: opacity 0.3s ease 2.2s; }
+      .js .cv-art__pt { opacity: 0; transform: scale(0); transform-box: fill-box; transform-origin: center; }
+      .js .is-visible .cv-art__pt { opacity: 1; transform: none; transition: opacity 0.3s ease, transform 0.5s var(--ease); transition-delay: calc(1.6s + var(--pi) * 0.12s); }
+      .js .is-visible .cv-art__scan { animation: scan 2.6s ease-in-out 2.6s infinite; }
+    }
+
+    /* ==========================================================================
+       20. KEYFRAMES & REDUCED MOTION
+       ========================================================================== */
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+    @keyframes scan {
+      0%   { transform: translateY(0);     opacity: 0; }
+      12%  { opacity: 0.9; }
+      88%  { opacity: 0.9; }
+      100% { transform: translateY(410px); opacity: 0; }
+    }
+    @keyframes grain {
+      0%   { transform: translate(0, 0); }
+      20%  { transform: translate(-3%, 2%); }
+      40%  { transform: translate(2%, -3%); }
+      60%  { transform: translate(-2%, -1%); }
+      80%  { transform: translate(3%, 3%); }
+      100% { transform: translate(0, 0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- 3D point-cloud scene (decorative; drawn by JS, hidden for reduced motion) -->
+  <canvas class="scene3d" aria-hidden="true"></canvas>
+
+  <!-- Intro title sequence (shown only when JS + motion allowed, once per session) -->
+  <div class="intro" aria-hidden="true">
+    <div class="intro__row label"><span>Reel 01 — Sasisekar R L</span><span>Portfolio / 2026</span></div>
+    <div class="intro__stage display">
+      <span class="intro__card">Data</span>
+      <span class="intro__card">Models</span>
+      <span class="intro__card intro__card--accent">Decisions.</span>
+    </div>
+    <div>
+      <div class="intro__bar"></div>
+      <div class="intro__row">
+        <span class="label">Click or press any key to skip</span>
+        <span class="intro__count display">000</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       A. NAVIGATION
+       ===================================================================== -->
+  <header class="site-header" id="top">
+    <div class="wrap site-header__inner">
+      <a class="brand" href="#top">SASISEKAR R L</a>
+
+      <nav class="nav" aria-label="Primary">
+        <ul class="nav__list" role="list">
+          <li><a class="nav__link link" href="#about">About</a></li>
+          <li><a class="nav__link link" href="#skills">Skills</a></li>
+          <li><a class="nav__link link" href="#projects">Projects</a></li>
+          <li><a class="nav__link link" href="#experience">Experience</a></li>
+          <li><a class="nav__link link" href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="site-header__actions">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark theme">
+          <span class="theme-toggle__icon" aria-hidden="true"></span>
+          <span class="theme-toggle__text" aria-hidden="true">Dark</span>
+        </button>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu">
+          <span class="menu-toggle__text">Menu</span>
+        </button>
+      </div>
+    </div>
+    <div class="progress" aria-hidden="true"></div>
+  </header>
+
+  <!-- Mobile full-screen menu -->
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile">
+    <ul class="mobile-menu__list" role="list">
+      <li style="--i:0"><a class="mobile-menu__link" href="#about">About <span class="label" aria-hidden="true">01</span></a></li>
+      <li style="--i:1"><a class="mobile-menu__link" href="#skills">Skills <span class="label" aria-hidden="true">03</span></a></li>
+      <li style="--i:2"><a class="mobile-menu__link" href="#projects">Projects <span class="label" aria-hidden="true">04</span></a></li>
+      <li style="--i:3"><a class="mobile-menu__link" href="#experience">Experience <span class="label" aria-hidden="true">05</span></a></li>
+      <li style="--i:4"><a class="mobile-menu__link" href="#contact">Contact <span class="label" aria-hidden="true">08</span></a></li>
+    </ul>
+    <div class="mobile-menu__foot">
+      <p class="label"><span class="dot" aria-hidden="true">●</span> Open to internships &amp; entry-level roles</p>
+      <a class="link" href="mailto:sasisekarsasi8@gmail.com">sasisekarsasi8@gmail.com</a>
+    </div>
+  </nav>
+
+  <main id="main" tabindex="-1">
+
+    <!-- =====================================================================
+         B. HERO
+         data-shape / data-side choose the 3D object for this part of the page
+         ===================================================================== -->
+    <section class="hero" id="hero" aria-labelledby="hero-title" data-scene="00 — Title" data-shape="sphere" data-side="1">
+      <div class="wrap hero__inner">
+        <div class="hero__top hero-fade" style="--delay:.1s">
+          <p class="label">AI &amp; DATA SCIENCE — PORTFOLIO</p>
+          <p class="label hero__scroll" aria-hidden="true">▶ Scroll to play ↓</p>
+        </div>
+
+        <div class="hero__stage">
+          <h1 class="display extrude hero__name" id="hero-title" data-split>
+            <span class="line">SASISEKAR</span>
+            <span class="line">R L</span>
+          </h1>
+          <div class="hero__intro">
+            <p class="hero__role" data-type>AI &amp; Data Science Undergraduate · Python &amp; Django Backend Developer</p>
+            <p class="hero__tagline hero-fade" style="--delay:1.5s">Building AI-powered and backend applications with Python, Django and Machine Learning.</p>
+          </div>
+        </div>
+
+        <div class="hero__bar hero-fade" style="--delay:1.75s">
+          <ul class="hero__status label" role="list">
+            <li><span aria-hidden="true">📍</span> Tamil Nadu, India</li>
+            <li><span class="dot" aria-hidden="true">●</span> Open to internships &amp; entry-level roles</li>
+          </ul>
+          <div class="hero__cta">
+            <a class="btn btn--solid" href="#projects">View Projects <span class="btn__arrow btn__arrow--down" aria-hidden="true">↓</span></a>
+            <a class="btn btn--line" href="#contact">Get in Touch <span class="btn__arrow" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Marquee band 1 (decorative) -->
+    <div class="marquee" data-marquee aria-hidden="true">
+      <div class="marquee__track">
+        <div class="marquee__group">
+          <span class="marquee__item">AI &amp; Data Science</span><span class="marquee__sep">✦</span>
+          <span class="marquee__item marquee__item--outline">Python</span><span class="marquee__sep">✦</span>
+          <span class="marquee__item">Django</span><span class="marquee__sep">✦</span>
+          <span class="marquee__item marquee__item--outline">Machine Learning</span><span class="marquee__sep">✦</span>
+          <span class="marquee__item">Computer Vision</span><span class="marquee__sep">✦</span>
+          <span class="marquee__item marquee__item--outline">Backend</span><span class="marquee__sep">✦</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         C. ABOUT
+         ===================================================================== -->
+    <section class="section" id="about" aria-labelledby="about-title" data-scene="01 — About" data-shape="helix" data-side="1">
+      <div class="wrap">
+        <header class="section-head grid reveal">
+          <div class="section-head__aside">
+            <span class="label">[ 01 ]</span>
+            <span class="label">(Profile)</span>
+          </div>
+          <h2 class="display section-head__title" id="about-title" data-split>About</h2>
+        </header>
+
+        <p class="pullquote reveal" data-scrub>“I build intelligent systems that turn data into <em>decisions.</em>”</p>
+
+        <div class="grid about__grid">
+          <figure class="portrait reveal">
+            <div class="media media--portrait" data-tilt>
+              <!-- REPLACE: delete the .placeholder div below and add your photo, e.g.
+                   <img src="images/portrait.jpg" alt="Portrait of Sasisekar R L" width="800" height="1000" loading="lazy" decoding="async">
+                   The image is shown in greyscale and cropped to 4:5 automatically. -->
+              <div class="placeholder" aria-hidden="true">
+                <div class="frame"></div>
+                <span class="placeholder__mark">SRL</span>
+                <span class="ph-label ph-label--tl label">[ Portrait — 4:5 ]</span>
+                <span class="ph-label ph-label--bl label">Replace with your photo</span>
+              </div>
+            </div>
+            <figcaption class="figcap label"><span>Sasisekar R L</span><span>Tamil Nadu, IN</span></figcaption>
+          </figure>
+
+          <div class="about__bio reveal" style="--d:1">
+            <p class="label">(Bio)</p>
+            <p>I’m a motivated Artificial Intelligence and Data Science undergraduate at Stella Mary’s College of Engineering, with hands-on experience in Python, Django, Django REST Framework, Machine Learning and Data Analytics. I’m passionate about developing AI-powered and backend applications, and I’m looking for an internship or entry-level opportunity where I can contribute to innovative projects and keep growing my technical skills.</p>
+          </div>
+
+          <div class="about__aside reveal" style="--d:2">
+            <div class="about__group">
+              <h3 class="label">Areas of Interest</h3>
+              <ul class="stack-list" role="list">
+                <li>Artificial Intelligence</li>
+                <li>Machine Learning</li>
+                <li>Backend Development</li>
+              </ul>
+            </div>
+            <div class="about__group">
+              <h3 class="label">Outside of Code</h3>
+              <ul class="stack-list" role="list">
+                <li>Exploring emerging technologies</li>
+                <li>Reading technology articles</li>
+                <li>Listening to music</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         D. EDUCATION
+         ===================================================================== -->
+    <section class="section" id="education" aria-labelledby="education-title" data-scene="02 — Education" data-shape="wave" data-side="0">
+      <div class="wrap">
+        <header class="section-head grid reveal">
+          <div class="section-head__aside">
+            <span class="label">[ 02 ]</span>
+            <span class="label">(2021 — 2027)</span>
+          </div>
+          <h2 class="display section-head__title" id="education-title" data-split>Education</h2>
+        </header>
+
+        <table class="edu reveal" role="table">
+          <caption class="sr-only">Education timeline</caption>
+          <thead role="rowgroup">
+            <tr role="row">
+              <th class="label" scope="col" role="columnheader">Years</th>
+              <th class="label" scope="col" role="columnheader">Institution</th>
+              <th class="label" scope="col" role="columnheader">Qualification</th>
+              <th class="label" scope="col" role="columnheader">Score</th>
+            </tr>
+          </thead>
+          <tbody role="rowgroup">
+            <tr role="row">
+              <td class="edu__year" role="cell">2023 — 2027</td>
+              <th class="edu__inst" scope="row" role="rowheader">Stella Mary’s College of Engineering</th>
+              <td class="edu__qual" role="cell" data-label="Qualification">B.Tech, Artificial Intelligence &amp; Data Science</td>
+              <td class="edu__score" role="cell" data-label="Score">CGPA <span data-count="7.3" data-decimals="1">7.3</span> / 10</td>
+            </tr>
+            <tr role="row">
+              <td class="edu__year" role="cell">2023</td>
+              <th class="edu__inst" scope="row" role="rowheader">Sree Narayana Guru Matriculation Higher Secondary School</th>
+              <td class="edu__qual" role="cell" data-label="Qualification">Higher Secondary Certificate (HSC)</td>
+              <td class="edu__score" role="cell" data-label="Score"><span data-count="75">75</span>%</td>
+            </tr>
+            <tr role="row">
+              <td class="edu__year" role="cell">2021</td>
+              <th class="edu__inst" scope="row" role="rowheader">Sree Narayana Guru Matriculation Higher Secondary School</th>
+              <td class="edu__qual" role="cell" data-label="Qualification">Secondary School Leaving Certificate (SSLC)</td>
+              <td class="edu__score" role="cell" data-label="Score">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         E. TECHNICAL SKILLS
+         ===================================================================== -->
+    <section class="section" id="skills" aria-labelledby="skills-title" data-scene="03 — Technical Skills" data-shape="cube" data-side="1">
+      <div class="wrap">
+        <header class="section-head grid reveal">
+          <div class="section-head__aside">
+            <span class="label">[ 03 ]</span>
+            <span class="label">(09 Groups)</span>
+          </div>
+          <h2 class="display section-head__title" id="skills-title" data-split>Technical Skills</h2>
+        </header>
+
+        <div class="grid skills">
+          <div class="skill line-in line-in--top reveal">
+            <div class="skill__head"><h3 class="skill__title">Programming Languages</h3><span class="label" aria-hidden="true">01</span></div>
+            <ul class="tags" role="list"><li class="tag">Python</li><li class="tag">Java (Basic)</li></ul>
+          </div>
+          <div class="skill line-in line-in--top reveal" style="--d:1">
+            <div class="skill__head"><h3 class="skill__title">Frameworks</h3><span class="label" aria-hidden="true">02</span></div>
+            <ul class="tags" role="list"><li class="tag">Django</li><li class="tag">Django REST Framework (DRF)</li></ul>
+          </div>
+          <div class="skill line-in line-in--top reveal" style="--d:2">
+            <div class="skill__head"><h3 class="skill__title">Machine Learning</h3><span class="label" aria-hidden="true">03</span></div>
+            <ul class="tags" role="list"><li class="tag">Scikit-learn</li><li class="tag">Pandas</li><li class="tag">NumPy</li><li class="tag">OpenCV</li><li class="tag">Matplotlib</li></ul>
+          </div>
+          <div class="skill line-in line-in--top reveal">
+            <div class="skill__head"><h3 class="skill__title">Data Analytics</h3><span class="label" aria-hidden="true">04</span></div>
+            <ul class="tags" role="list"><li class="tag">Microsoft Excel</li><li class="tag">Power BI</li></ul>
+          </div>
+          <div class="skill line-in line-in--top reveal" style="--d:1">
+            <div class="skill__head"><h3 class="skill__title">Databases</h3><span class="label" aria-hidden="true">05</span></div>
+            <ul class="tags" role="list"><li class="tag">MySQL</li></ul>
+          </div>
+          <div class="skill line-in line-in--top reveal" style="--d:2">
+            <div class="skill__head"><h3 class="skill__title">Development Tools</h3><span class="label" aria-hidden="true">06</span></div>
+            <ul class="tags" role="list"><li class="tag">Visual Studio Code</li><li class="tag">Cursor</li><li class="tag">Google Colab</li><li class="tag">Jupyter Notebook</li></ul>
+          </div>
+          <div class="skill line-in line-in--top reveal">
+            <div class="skill__head"><h3 class="skill__title">Version Control</h3><span class="label" aria-hidden="true">07</span></div>
+            <ul class="tags" role="list"><li class="tag">Git</li><li class="tag">GitHub</li></ul>
+          </div>
+          <div class="skill line-in line-in--top reveal" style="--d:1">
+            <div class="skill__head"><h3 class="skill__title">AI Tools</h3><span class="label" aria-hidden="true">08</span></div>
+            <ul class="tags" role="list"><li class="tag">ChatGPT</li><li class="tag">GitHub Copilot</li></ul>
+          </div>
+          <div class="skill line-in line-in--top reveal" style="--d:2">
+            <div class="skill__head"><h3 class="skill__title">Soft Skills</h3><span class="label" aria-hidden="true">09</span></div>
+            <ul class="tags" role="list"><li class="tag">Communication</li><li class="tag">Leadership</li><li class="tag">Problem Solving</li></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         F. PROJECTS
+         To add a project: copy the whole <article class="project"> … </article>
+         block, paste it below the last one, and update the number (P—02),
+         ids (p2-title), text, tags, image and links. Spacing, dividers and
+         animations are applied automatically.
+         ===================================================================== -->
+    <section class="section" id="projects" aria-labelledby="projects-title" data-scene="04 — Projects" data-shape="head" data-side="1">
+      <div class="wrap">
+        <header class="section-head grid reveal">
+          <div class="section-head__aside">
+            <span class="label">[ 04 ]</span>
+            <span class="label">(Selected Work)</span>
+          </div>
+          <h2 class="display section-head__title" id="projects-title" data-split>Projects</h2>
+        </header>
+
+        <!-- ===== PROJECT BLOCK — START ===== -->
+        <article class="project" aria-labelledby="p1-title">
+          <div class="project__meta reveal">
+            <span class="label">P—01</span>
+            <span class="label">FEATURED PROJECT — COMPUTER VISION / IoT</span>
+          </div>
+
+          <h3 class="display extrude project__title reveal" id="p1-title" data-split>Smart Attendance System</h3>
+
+          <ul class="tags project__tags reveal" role="list" aria-label="Technologies">
+            <li class="tag">Python</li><li class="tag">OpenCV</li><li class="tag">ESP32-CAM</li><li class="tag">Arduino IDE</li>
+          </ul>
+
+          <figure class="project__media reveal">
+            <div class="media media--wide" data-tilt>
+              <!-- REPLACE: delete everything inside this .media div and add your image, e.g.
+                   <img src="images/smart-attendance.jpg" alt="Smart Attendance System recognising a face through the ESP32-CAM feed" width="1600" height="900" loading="lazy" decoding="async">
+                   (A <video autoplay muted loop playsinline> also works and fits the reel style.) -->
+              <svg class="cv-art" viewBox="0 0 1600 900" aria-hidden="true" focusable="false">
+                <defs>
+                  <pattern id="cv-grid" width="64" height="64" patternUnits="userSpaceOnUse">
+                    <path d="M64 0H0V64" fill="none" stroke="currentColor" stroke-width="1" opacity=".16"/>
+                  </pattern>
+                </defs>
+                <rect width="1600" height="900" fill="url(#cv-grid)"/>
+                <path d="M800 60V840M80 450H1520" stroke="currentColor" stroke-width="1" opacity=".35"/>
+                <ellipse class="cv-art__subject" cx="800" cy="390" rx="132" ry="168" pathLength="1"/>
+                <path class="cv-art__subject" d="M548 900c0-176 110-268 252-268s252 92 252 268" pathLength="1"/>
+                <rect class="cv-art__box" x="628" y="190" width="344" height="414" pathLength="1"/>
+                <rect class="cv-art__scan" x="628" y="192" width="344" height="3"/>
+                <rect class="cv-art__tag" x="628" y="146" width="300" height="44"/>
+                <text class="cv-art__text" x="646" y="176" data-match>FACE_01 · MATCH 0.97</text>
+                <circle class="cv-art__pt" style="--pi:0" cx="752" cy="362" r="6"/>
+                <circle class="cv-art__pt" style="--pi:1" cx="848" cy="362" r="6"/>
+                <circle class="cv-art__pt" style="--pi:2" cx="800" cy="420" r="6"/>
+                <circle class="cv-art__pt" style="--pi:3" cx="764" cy="478" r="6"/>
+                <circle class="cv-art__pt" style="--pi:4" cx="836" cy="478" r="6"/>
+              </svg>
+              <div class="frame" aria-hidden="true"></div>
+              <span class="ph-label ph-label--tl label" aria-hidden="true">ESP32-CAM // CH-01</span>
+              <span class="ph-label ph-label--tr label" aria-hidden="true"><span class="dot">●</span> Live</span>
+              <span class="ph-label ph-label--bl label">[ Project image — 16:9 ]</span>
+              <span class="ph-label ph-label--br label">Replace with photo / demo screenshot</span>
+            </div>
+            <figcaption class="figcap label"><span>Fig. 01 — Smart Attendance System</span><span>Computer Vision / IoT</span></figcaption>
+          </figure>
+
+          <div class="grid project__body">
+            <div class="project__lead reveal">
+              <p class="project__intro">A real-time face recognition attendance system that automates attendance recording over a wireless camera module.</p>
+              <div class="project__actions">
+                <a class="btn btn--solid" href="[GITHUB_PROJECT_URL]" target="_blank" rel="noopener noreferrer">View on GitHub <span class="btn__arrow" aria-hidden="true">↗</span></a>
+                <a class="btn btn--line" href="[DEMO_URL]" target="_blank" rel="noopener noreferrer">Live Demo / Video <span class="btn__arrow" aria-hidden="true">↗</span></a>
+              </div>
+            </div>
+
+            <ol class="highlights reveal" style="--d:1">
+              <li class="highlight line-in line-in--top">
+                <span class="label">01</span>
+                <p>Developed a real-time face recognition attendance system using OpenCV and ESP32-CAM.</p>
+              </li>
+              <li class="highlight line-in line-in--top">
+                <span class="label">02</span>
+                <p>Automated attendance recording to improve efficiency and reduce manual effort.</p>
+              </li>
+              <li class="highlight line-in line-in--top">
+                <span class="label">03</span>
+                <p>Applied image processing and computer vision techniques for face detection and recognition.</p>
+              </li>
+              <li class="highlight line-in line-in--top">
+                <span class="label">04</span>
+                <p>Integrated ESP32-CAM for wireless attendance monitoring.</p>
+              </li>
+            </ol>
+          </div>
+        </article>
+        <!-- ===== PROJECT BLOCK — END ===== -->
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         G. EXPERIENCE
+         ===================================================================== -->
+    <section class="section" id="experience" aria-labelledby="experience-title" data-scene="05 — Experience" data-shape="torus" data-side="1">
+      <div class="wrap">
+        <header class="section-head grid reveal">
+          <div class="section-head__aside">
+            <span class="label">[ 05 ]</span>
+            <span class="label">(2025 — 2026)</span>
+          </div>
+          <h2 class="display section-head__title" id="experience-title" data-split>Experience</h2>
+        </header>
+
+        <ol class="xp">
+          <li class="xp__item grid line-in reveal">
+            <p class="xp__year" data-split><time datetime="2025">2025</time></p>
+            <div class="xp__main">
+              <span class="label">(01)</span>
+              <h3 class="xp__role">Machine Learning Intern</h3>
+              <p class="xp__org">GenLab IB</p>
+            </div>
+            <div class="xp__aside">
+              <a class="link link--mono" href="[CERT_LINK_1]" target="_blank" rel="noopener noreferrer">View Certificate <span aria-hidden="true">↗</span></a>
+            </div>
+          </li>
+          <li class="xp__item grid line-in reveal">
+            <p class="xp__year" data-split><time datetime="2026">2026</time></p>
+            <div class="xp__main">
+              <span class="label">(02)</span>
+              <h3 class="xp__role">Drone Development and Automation Intern</h3>
+              <p class="xp__org">Entudio Pvt Ltd</p>
+            </div>
+            <div class="xp__aside">
+              <a class="link link--mono" href="[CERT_LINK_2]" target="_blank" rel="noopener noreferrer">View Certificate <span aria-hidden="true">↗</span></a>
+            </div>
+          </li>
+          <li class="xp__item grid line-in reveal">
+            <p class="xp__year" data-split><time datetime="2026">2026</time></p>
+            <div class="xp__main">
+              <span class="label">(03)</span>
+              <h3 class="xp__role">Front-End Development Trainee (In-Plant Training)</h3>
+              <p class="xp__org">Iniramsquare Pvt Ltd</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         H. CERTIFICATIONS  +  I. ACHIEVEMENTS
+         ===================================================================== -->
+    <div class="section" data-scene="06 — Certifications &amp; Achievements" data-shape="galaxy" data-side="0">
+      <div class="wrap grid split">
+        <section id="certifications" aria-labelledby="cert-title" class="reveal">
+          <header class="sub-head">
+            <p class="label"><span>[ 06 ]</span><span>(03)</span></p>
+            <h2 class="display sub-title" id="cert-title" data-split>Certifications</h2>
+          </header>
+          <ul class="rows" role="list">
+            <li class="row line-in">
+              <span class="row__name">Python for Data Science</span>
+              <span class="row__year label">2023</span>
+              <span class="row__issuer label">Infosys Springboard</span>
+            </li>
+            <li class="row line-in">
+              <span class="row__name">Django</span>
+              <span class="row__year label" aria-hidden="true">—</span>
+              <span class="row__issuer label">Simplilearn</span>
+            </li>
+            <li class="row line-in">
+              <span class="row__name">Google Data Analytics</span>
+              <span class="row__year label" aria-hidden="true">—</span>
+              <span class="row__issuer label">Coursera</span>
+            </li>
+          </ul>
+        </section>
+
+        <section id="achievements" aria-labelledby="ach-title" class="reveal" style="--d:1">
+          <header class="sub-head">
+            <p class="label"><span>[ 07 ]</span><span>(03)</span></p>
+            <h2 class="display sub-title" id="ach-title" data-split>Achievements</h2>
+          </header>
+          <ol class="ach">
+            <li class="line-in"><span class="label">A—01</span><span>Developed a Smart Attendance System using ESP32-CAM and OpenCV.</span></li>
+            <li class="line-in"><span class="label">A—02</span><span>Participated in a Hackathon conducted at Kalasalingam University.</span></li>
+            <li class="line-in"><span class="label">A—03</span><span>Participated in multiple technical workshops.</span></li>
+          </ol>
+        </section>
+      </div>
+    </div>
+
+    <!-- Marquee band 2 (decorative, runs the other way) -->
+    <div class="marquee" data-marquee data-dir="right" aria-hidden="true">
+      <div class="marquee__track">
+        <div class="marquee__group">
+          <span class="marquee__item marquee__item--outline">Open to Internships</span><span class="marquee__sep">✦</span>
+          <span class="marquee__item">Entry-Level Roles</span><span class="marquee__sep">✦</span>
+          <span class="marquee__item marquee__item--outline">AI</span><span class="marquee__sep">✦</span>
+          <span class="marquee__item">ML</span><span class="marquee__sep">✦</span>
+          <span class="marquee__item marquee__item--outline">Backend</span><span class="marquee__sep">✦</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         J. CONTACT
+         ===================================================================== -->
+    <section class="section contact" id="contact" aria-labelledby="contact-title" data-scene="08 — Contact" data-shape="sphere" data-side="1">
+      <div class="wrap">
+        <p class="label contact__kicker reveal"><span>[ 08 ] — Contact</span><span>(Say hello)</span></p>
+        <div class="contact__stage">
+          <h2 class="display extrude contact__title reveal" id="contact-title" data-split>LET’S BUILD SOMETHING.</h2>
+        </div>
+        <p class="contact__sub reveal">Open to internships and entry-level opportunities in AI, ML and backend development.</p>
+
+        <div class="contact__email-row reveal">
+          <a class="contact__email link" href="mailto:sasisekarsasi8@gmail.com">sasisekarsasi8@gmail.com</a>
+          <button class="btn btn--line copy" type="button" data-copy="sasisekarsasi8@gmail.com" aria-describedby="copy-status">
+            <span class="copy__text">Copy Email</span>
+          </button>
+          <span class="sr-only" id="copy-status" role="status" aria-live="polite"></span>
+        </div>
+
+        <dl class="grid contact__list reveal">
+          <div class="contact__item">
+            <dt class="label">Phone</dt>
+            <dd><a class="link" href="tel:+919952836291">+91 99528 36291</a></dd>
+          </div>
+          <div class="contact__item">
+            <dt class="label">Elsewhere</dt>
+            <dd>
+              <a class="link" href="[LINKEDIN_URL]" target="_blank" rel="noopener noreferrer">LinkedIn</a><span class="sep" aria-hidden="true">·</span><a class="link" href="[GITHUB_URL]" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </dd>
+          </div>
+          <div class="contact__item">
+            <dt class="label">Résumé</dt>
+            <dd><a class="btn btn--solid" href="[RESUME_PDF_URL]" download>Download Résumé <span class="btn__arrow btn__arrow--down" aria-hidden="true">↓</span></a></dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <!-- =====================================================================
+       K. FOOTER
+       ===================================================================== -->
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <p>© 2026 SASISEKAR R L — Designed &amp; built with Python mindset.</p>
+      <p class="label footer__clock">IST <time id="ist-clock">--:--:--</time> — Tamil Nadu</p>
+      <a class="link link--mono" href="#top">Back to top <span aria-hidden="true">↑</span></a>
+    </div>
+  </footer>
+
+  <!-- Video HUD: current scene + scroll timecode (desktop, decorative) -->
+  <div class="hud label" aria-hidden="true">
+    <span><span class="dot">●</span> REC</span>
+    <span class="hud__scene">SC 00 — Title</span>
+    <span><span class="hud__tc">00:00:00:00</span> <span class="hud__total">/ 00:02:00:00</span></span>
+  </div>
+
+  <!-- Film grain overlay (decorative) -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <script>
+    /* ======================================================================
+       Site behaviour — vanilla JS, no dependencies
+       ====================================================================== */
+    (function () {
+      'use strict';
+
+      var root = document.documentElement;
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      var motionOK = !reduceMotion.matches;
+      var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      var scene = null;                 // 3D point cloud, created in section 7
+      var pointer = { x: 0, y: 0 };     // cursor position, -1 … 1 on each axis
+      var vel = 0;                      // smoothed scroll velocity (px / frame)
+
+      function onChange(mq, fn) {
+        if (mq.addEventListener) mq.addEventListener('change', fn);
+        else if (mq.addListener) mq.addListener(fn);
+      }
+      function clamp(v, min, max) { return v < min ? min : v > max ? max : v; }
+      function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+      /* ---------- 1. Light / dark theme ---------- */
+      var themeToggle = document.querySelector('[data-theme-toggle]');
+      var themeMetas = document.querySelectorAll('meta[name="theme-color"]');
+
+      function activeTheme() {
+        return root.getAttribute('data-theme') || (darkQuery.matches ? 'dark' : 'light');
+      }
+      function syncTheme() {
+        var next = activeTheme() === 'dark' ? 'light' : 'dark';
+        if (themeToggle) {
+          themeToggle.setAttribute('aria-label', 'Switch to ' + next + ' theme');
+          themeToggle.querySelector('.theme-toggle__text').textContent = next;
+        }
+        var bg = getComputedStyle(root).getPropertyValue('--bg').trim();
+        themeMetas.forEach(function (m) { m.setAttribute('content', bg); });
+        if (scene) scene.readColors();
+      }
+      if (themeToggle) {
+        themeToggle.addEventListener('click', function () {
+          var next = activeTheme() === 'dark' ? 'light' : 'dark';
+          root.setAttribute('data-theme', next);
+          try { localStorage.setItem('theme', next); } catch (e) {}
+          syncTheme();
+        });
+      }
+      onChange(darkQuery, syncTheme);
+      syncTheme();
+
+      /* ---------- 2. Mobile menu ---------- */
+      var menuBtn = document.querySelector('.menu-toggle');
+      var menu = document.getElementById('mobile-menu');
+      var behindMenu = [document.getElementById('main'), document.querySelector('.footer')];
+
+      function isMenuOpen() { return menu && menu.classList.contains('is-open'); }
+      function setMenu(open) {
+        if (!menu || !menuBtn) return;
+        menu.classList.toggle('is-open', open);
+        menuBtn.setAttribute('aria-expanded', String(open));
+        menuBtn.querySelector('.menu-toggle__text').textContent = open ? 'Close' : 'Menu';
+        root.classList.toggle('menu-open', open);
+        behindMenu.forEach(function (el) {
+          if (!el) return;
+          if (open) el.setAttribute('inert', ''); else el.removeAttribute('inert');
+        });
+        if (open) {
+          var first = menu.querySelector('a');
+          if (first) first.focus({ preventScroll: true });
+        }
+      }
+      if (menuBtn) menuBtn.addEventListener('click', function () { setMenu(!isMenuOpen()); });
+      if (menu) {
+        menu.addEventListener('click', function (e) {
+          if (e.target.closest('a')) setMenu(false);   // close, then let the anchor scroll
+        });
+      }
+      var brand = document.querySelector('.brand');
+      if (brand) brand.addEventListener('click', function () { if (isMenuOpen()) setMenu(false); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && isMenuOpen()) { setMenu(false); menuBtn.focus(); }
+      });
+      onChange(window.matchMedia('(min-width: 900px)'), function (mq) { if (mq.matches) setMenu(false); });
+
+      /* ---------- 3. Kinetic text ----------
+         Splits text into words/letters for animation. The original text is
+         kept once in a visually hidden span so screen readers read it
+         normally; the animated copy is aria-hidden.
+         mode: 'chars' (3D letters), 'words' (scroll scrub), 'type' (typewriter) */
+      function splitText(el, mode) {
+        var original = el.textContent.replace(/\s+/g, ' ').trim();
+        var index = 0;
+
+        function makeWord(text) {
+          if (mode === 'words') {
+            var w = document.createElement('span');
+            w.className = 'w';
+            w.textContent = text;
+            index++;
+            return w;
+          }
+          var word = document.createElement('span');
+          word.className = mode === 'chars' ? 'split-word' : 'type-word';
+          Array.from(text).forEach(function (ch) {
+            var c = document.createElement('span');
+            c.className = mode === 'chars' ? 'char' : 'tc';
+            c.textContent = ch;
+            c.style.setProperty('--ci', index++);
+            word.appendChild(c);
+          });
+          return word;
+        }
+        function walk(node) {
+          Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+            if (child.nodeType === 3) {
+              var frag = document.createDocumentFragment();
+              child.textContent.split(/(\s+)/).forEach(function (part) {
+                if (!part) return;
+                if (/^\s+$/.test(part)) frag.appendChild(document.createTextNode(' '));
+                else frag.appendChild(makeWord(part));
+              });
+              node.replaceChild(frag, child);
+            } else if (child.nodeType === 1) {
+              walk(child);
+            }
+          });
+        }
+
+        var holder = document.createElement('span');
+        holder.className = 'split-holder';
+        holder.setAttribute('aria-hidden', 'true');
+        while (el.firstChild) holder.appendChild(el.firstChild);
+        walk(holder);
+        if (mode === 'type') {
+          var caret = document.createElement('span');
+          caret.className = 'caret';
+          caret.style.setProperty('--n', index);
+          holder.appendChild(caret);
+        }
+        var sr = document.createElement('span');
+        sr.className = 'sr-only';
+        sr.textContent = original;
+        el.appendChild(sr);
+        el.appendChild(holder);
+      }
+
+      if (motionOK) {
+        document.querySelectorAll('[data-split]').forEach(function (el) { splitText(el, 'chars'); });
+        document.querySelectorAll('[data-scrub]').forEach(function (el) { splitText(el, 'words'); });
+        document.querySelectorAll('[data-type]').forEach(function (el) { splitText(el, 'type'); });
+
+        // Stagger indexes for tags, hairlines and highlights
+        document.querySelectorAll('.tags').forEach(function (list) {
+          Array.prototype.forEach.call(list.children, function (t, i) { t.style.setProperty('--ti', i); });
+        });
+        document.querySelectorAll('.line-in').forEach(function (el) {
+          var i = Array.prototype.indexOf.call(el.parentNode.children, el);
+          el.style.setProperty('--li', i % 4);
+        });
+      }
+
+      /* ---------- 4. Reveal on scroll (+ count-ups + CV demo) ---------- */
+      function tween(duration, onUpdate) {
+        var start = null;
+        function step(t) {
+          if (start === null) start = t;
+          var p = Math.min((t - start) / duration, 1);
+          onUpdate(1 - Math.pow(1 - p, 4));   // ease-out quart
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+      function countUp(el) {
+        var target = parseFloat(el.getAttribute('data-count'));
+        var decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+        setTimeout(function () {
+          tween(1400, function (e) { el.textContent = (target * e).toFixed(decimals); });
+        }, 300);
+      }
+      function runMatch(el) {
+        el.textContent = 'FACE_01 · MATCH 0.00';
+        setTimeout(function () {
+          tween(1200, function (e) { el.textContent = 'FACE_01 · MATCH ' + (0.97 * e).toFixed(2); });
+        }, 2200);
+      }
+      function onReveal(el) {
+        el.classList.add('is-visible');
+        if (!motionOK) return;
+        el.querySelectorAll('[data-count]').forEach(countUp);
+        el.querySelectorAll('[data-match]').forEach(runMatch);
+      }
+
+      var revealEls = document.querySelectorAll('.reveal');
+      if (motionOK && 'IntersectionObserver' in window) {
+        var revealer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              onReveal(entry.target);
+              revealer.unobserve(entry.target);
+            }
+          });
+        }, { rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
+        revealEls.forEach(function (el) { revealer.observe(el); });
+      } else {
+        revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+      }
+      onChange(reduceMotion, function (mq) {
+        if (mq.matches) revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+      });
+
+      /* ---------- 5. Highlight the nav link for the section in view ---------- */
+      var navLinks = document.querySelectorAll('.nav__link, .mobile-menu__link');
+      if ('IntersectionObserver' in window) {
+        var spy = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var hash = '#' + entry.target.id;
+            navLinks.forEach(function (a) {
+              var on = a.getAttribute('href') === hash;
+              a.classList.toggle('is-active', on);
+              if (on) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+            });
+          });
+        }, { rootMargin: '-45% 0px -54% 0px' });
+        ['about', 'skills', 'projects', 'experience', 'contact'].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) spy.observe(el);
+        });
+      }
+
+      /* ---------- 6. Pointer: cursor-driven 3D tilt ---------- */
+      if (motionOK && finePointer) {
+        var pointerQueued = false;
+        window.addEventListener('pointermove', function (e) {
+          pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+          pointer.y = (e.clientY / window.innerHeight) * 2 - 1;
+          if (pointerQueued) return;
+          pointerQueued = true;
+          requestAnimationFrame(function () {
+            pointerQueued = false;
+            root.style.setProperty('--mx', pointer.x.toFixed(3));
+            root.style.setProperty('--my', pointer.y.toFixed(3));
+          });
+        }, { passive: true });
+
+        // Cards that tilt toward the cursor, with a moving glare
+        document.querySelectorAll('[data-tilt]').forEach(function (card) {
+          card.addEventListener('pointermove', function (e) {
+            var r = card.getBoundingClientRect();
+            var px = (e.clientX - r.left) / r.width;
+            var py = (e.clientY - r.top) / r.height;
+            card.style.transform = 'perspective(1000px) rotateY(' + ((px - 0.5) * 12).toFixed(2) + 'deg) rotateX(' + ((0.5 - py) * 10).toFixed(2) + 'deg) scale(1.02)';
+            card.style.setProperty('--gx', (px * 100).toFixed(1) + '%');
+            card.style.setProperty('--gy', (py * 100).toFixed(1) + '%');
+            card.classList.add('is-tilting');
+          });
+          card.addEventListener('pointerleave', function () {
+            card.style.transform = '';
+            card.classList.remove('is-tilting');
+          });
+        });
+      }
+
+      /* ---------- 7. 3D point-cloud scene ----------
+         ~1,200 points (fewer on phones) are projected with perspective onto a
+         2D canvas. Each section names a target shape; every point eases
+         toward its slot in that shape at its own speed, so the cloud morphs. */
+      scene = (function () {
+        var canvas = document.querySelector('.scene3d');
+        if (!canvas || !motionOK || !canvas.getContext) return null;
+        var ctx = canvas.getContext('2d');
+        if (!ctx) return null;
+
+        var small = window.innerWidth < 720;
+        var N = small ? 560 : 1200;
+        var TAU = Math.PI * 2;
+        var pos = new Float32Array(N * 3);
+        var tgt = new Float32Array(N * 3);
+        var spd = new Float32Array(N);
+        function rnd(i) { var s = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return s - Math.floor(s); }
+
+        // Each shape returns [x, y, z] for point i, roughly within -1.3 … 1.3
+        var SHAPES = {
+          sphere: function (i) {
+            var y = 1 - 2 * (i + 0.5) / N, r = Math.sqrt(1 - y * y), a = i * 2.399963;
+            return [Math.cos(a) * r, y, Math.sin(a) * r];
+          },
+          helix: function (i) {   // DNA double helix with rungs
+            var k = i % 3, u = Math.floor(i / 3) / Math.ceil(N / 3), a = u * TAU * 3, y = (u - 0.5) * 2.6;
+            if (k < 2) { var b = a + k * Math.PI; return [Math.cos(b) * 0.6, y, Math.sin(b) * 0.6]; }
+            var f = rnd(i) * 2 - 1;
+            return [Math.cos(a) * 0.6 * f, y, Math.sin(a) * 0.6 * f];
+          },
+          wave: function (i) {    // flat grid; the frame loop makes it ripple
+            var g = Math.ceil(Math.sqrt(N)), gx = i % g, gz = Math.floor(i / g);
+            return [(gx / (g - 1) - 0.5) * 2.8, 0, (gz / (g - 1) - 0.5) * 2.8];
+          },
+          cube: function (i) {    // lattice on the six faces
+            var face = i % 6, g = Math.ceil(Math.sqrt(N / 6)), k = Math.floor(i / 6);
+            var s = 0.68, sign = face % 2 ? 1 : -1;
+            var u = ((k % g) / (g - 1) * 2 - 1) * s, v = ((Math.floor(k / g) % g) / (g - 1) * 2 - 1) * s;
+            if (face < 2) return [sign * s, u, v];
+            if (face < 4) return [u, sign * s, v];
+            return [u, v, sign * s];
+          },
+          head: function (i) {    // face-scan bust: head ellipsoid + shoulders
+            var n = Math.floor(N * 0.68);
+            if (i < n) {
+              var y = 1 - 2 * (i + 0.5) / n, r = Math.sqrt(1 - y * y), a = i * 2.399963;
+              return [Math.cos(a) * r * 0.52, y * 0.68 + 0.42, Math.sin(a) * r * 0.58];
+            }
+            var a2 = rnd(i) * Math.PI / 2, b = rnd(i + 3) * TAU;
+            return [Math.sin(a2) * Math.cos(b) * 0.95, -0.88 + Math.cos(a2) * 0.4, Math.sin(a2) * Math.sin(b) * 0.45];
+          },
+          torus: function (i) {
+            var u = TAU * rnd(i), v = TAU * rnd(i + N), R = 0.85, r = 0.3;
+            return [(R + r * Math.cos(v)) * Math.cos(u), r * Math.sin(v), (R + r * Math.cos(v)) * Math.sin(u)];
+          },
+          galaxy: function (i) {  // three spiral arms
+            var arm = i % 3, r = Math.pow(rnd(i), 0.7) * 1.35;
+            var a = arm * TAU / 3 + r * 3.4 + (rnd(i + 5) - 0.5) * 0.5;
+            return [Math.cos(a) * r, (rnd(i + 9) - 0.5) * 0.12 * (1.4 - r), Math.sin(a) * r];
+          }
+        };
+        // Camera tilt and ripple strength per shape
+        var LOOK = {
+          sphere: { tilt: 0.25, amp: 0 }, helix: { tilt: 0.2, amp: 0 }, wave: { tilt: 0.55, amp: 0.2 },
+          cube: { tilt: 0.5, amp: 0 }, head: { tilt: 0.05, amp: 0 }, torus: { tilt: 1.0, amp: 0 },
+          galaxy: { tilt: 1.05, amp: 0 }
+        };
+
+        var shapeName = '';
+        var cfg = { side: 1, tilt: 0.25, amp: 0 };
+        var st = { side: 1, tilt: 0.25, amp: 0, alpha: 0, on: 0, rot: 0, mx: 0, my: 0 };
+        var fg = '#0E0E0E', accent = '#2F5BFF';
+        var W = 0, H = 0, raf = 0;
+
+        function setShape(name) {
+          if (!SHAPES[name]) name = 'sphere';
+          if (name === shapeName) return;
+          shapeName = name;
+          for (var i = 0; i < N; i++) {
+            var p = SHAPES[name](i);
+            tgt[i * 3] = p[0]; tgt[i * 3 + 1] = p[1]; tgt[i * 3 + 2] = p[2];
+          }
+          cfg.tilt = LOOK[name].tilt;
+          cfg.amp = LOOK[name].amp;
+        }
+        function resize() {
+          var dpr = Math.min(window.devicePixelRatio || 1, small ? 1.5 : 1.75);
+          W = window.innerWidth; H = window.innerHeight;
+          canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        function readColors() {
+          var cs = getComputedStyle(root);
+          fg = cs.getPropertyValue('--fg').trim() || fg;
+          accent = cs.getPropertyValue('--accent').trim() || accent;
+        }
+
+        // Start scattered far out, so the first shape "assembles" on load
+        for (var i = 0; i < N; i++) {
+          pos[i * 3] = (rnd(i + 11) - 0.5) * 9;
+          pos[i * 3 + 1] = (rnd(i + 17) - 0.5) * 9;
+          pos[i * 3 + 2] = (rnd(i + 23) - 0.5) * 9;
+          spd[i] = 0.02 + rnd(i + 7) * 0.045;
+        }
+        setShape('sphere');
+        resize();
+        readColors();
+
+        function frame(t) {
+          if (document.hidden) { raf = 0; return; }
+          var time = t * 0.001;
+          st.side += (cfg.side - st.side) * 0.035;
+          st.tilt += (cfg.tilt - st.tilt) * 0.035;
+          st.amp += (cfg.amp - st.amp) * 0.035;
+          st.alpha += (st.on - st.alpha) * 0.03;
+          st.rot += 0.0022 + Math.min(Math.abs(vel), 80) * 0.0005;   // spins faster while scrolling
+          st.mx += (pointer.x - st.mx) * 0.05;
+          st.my += (pointer.y - st.my) * 0.05;
+
+          var ry = st.rot + st.mx * 0.5, rx = st.tilt + st.my * 0.3;
+          var cY = Math.cos(ry), sY = Math.sin(ry), cX = Math.cos(rx), sX = Math.sin(rx);
+          var wide = W >= 900;
+          var cx = W * (0.5 + (wide ? st.side * 0.24 : 0)), cy = H * 0.52;
+          var S = Math.min(W, H) * (wide ? 0.34 : 0.42);
+          var A = st.alpha * (wide ? 0.7 : 0.4);
+
+          ctx.clearRect(0, 0, W, H);
+          // Two passes so the fill colour is set only twice per frame
+          for (var pass = 0; pass < 2; pass++) {
+            ctx.fillStyle = pass ? accent : fg;
+            for (var i = 0; i < N; i++) {
+              if ((i % 11 === 0) !== (pass === 1)) continue;
+              var o = i * 3;
+              pos[o] += (tgt[o] - pos[o]) * spd[i];
+              pos[o + 1] += (tgt[o + 1] - pos[o + 1]) * spd[i];
+              pos[o + 2] += (tgt[o + 2] - pos[o + 2]) * spd[i];
+              if (A < 0.004) continue;
+
+              var x = pos[o], y = pos[o + 1], z = pos[o + 2];
+              if (st.amp > 0.002) y += st.amp * Math.sin(x * 2.4 + time * 1.5) * Math.cos(z * 2.4 + time * 1.2);
+              var x1 = x * cY - z * sY, z1 = x * sY + z * cY;          // rotate around Y
+              var y1 = y * cX - z1 * sX, z2 = y * sX + z1 * cX;        // rotate around X
+              var k = 4 / (4 - z2);                                     // perspective
+              var d = clamp((z2 + 1.4) / 2.8, 0, 1);                    // 0 far … 1 near
+              var size = (0.7 + d * 1.9) * k;
+              ctx.globalAlpha = A * (0.15 + d * 0.85) * (pass ? 1.25 : 1);
+              ctx.fillRect(cx + x1 * S * k - size / 2, cy - y1 * S * k - size / 2, size, size);
+            }
+          }
+          ctx.globalAlpha = 1;
+          raf = requestAnimationFrame(frame);
+        }
+        function run() { if (!raf) raf = requestAnimationFrame(frame); }
+
+        document.addEventListener('visibilitychange', function () { if (!document.hidden) run(); });
+        window.addEventListener('resize', resize);
+        run();
+
+        return {
+          readColors: readColors,
+          start: function () { st.on = 1; },
+          setScene: function (el) {
+            setShape(el.getAttribute('data-shape'));
+            cfg.side = parseFloat(el.getAttribute('data-side') || '0') || 0;
+          }
+        };
+      })();
+
+      /* ---------- 8. Scroll engine: playhead, timecode HUD, 3D section
+                        entrances, hero parallax, pull-quote scrub, marquees ---------- */
+      var RUNTIME = 120;   // the page "plays" as a 2-minute reel
+      var progressBar = document.querySelector('.progress');
+      var hudScene = document.querySelector('.hud__scene');
+      var hudTc = document.querySelector('.hud__tc');
+      var scenes = document.querySelectorAll('[data-scene]');
+      var hero = document.getElementById('hero');
+      var heroLines = document.querySelectorAll('.hero__name .split-holder .line');
+      var stages = Array.prototype.map.call(document.querySelectorAll('.section > .wrap'), function (w) {
+        return { wrap: w, section: w.parentNode, last: -1 };
+      });
+      var scrubs = Array.prototype.map.call(document.querySelectorAll('[data-scrub]'), function (el) {
+        return { el: el, words: el.querySelectorAll('.w'), lit: -1 };
+      });
+      var lastY = -1, running = false, lastTc = '', lastScene = null, visibleMarquees = 0;
+
+      function updateScroll(y) {
+        var vh = window.innerHeight;
+        var max = document.documentElement.scrollHeight - vh;
+        var p = max > 0 ? clamp(y / max, 0, 1) : 0;
+
+        if (progressBar) progressBar.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+
+        var secs = p * RUNTIME;
+        var tc = '00:' + pad2(Math.floor(secs / 60)) + ':' + pad2(Math.floor(secs % 60)) + ':' + pad2(Math.floor((secs % 1) * 25));
+        if (hudTc && tc !== lastTc) { hudTc.textContent = tc; lastTc = tc; }
+
+        var current = scenes[0];
+        for (var i = 0; i < scenes.length; i++) {
+          if (scenes[i].getBoundingClientRect().top <= vh * 0.5) current = scenes[i];
+        }
+        if (current && current !== lastScene) {
+          if (hudScene) hudScene.textContent = 'SC ' + current.getAttribute('data-scene');
+          if (scene) scene.setScene(current);
+          lastScene = current;
+        }
+
+        if (!motionOK) return;
+
+        // Sections enter lying back (bottom edge away from the camera) and
+        // stand up as they scroll in, like a camera crane move. The tilt is
+        // always away from the viewer so nothing is projected larger.
+        stages.forEach(function (s) {
+          var top = s.section.getBoundingClientRect().top;
+          var e = 1 - Math.pow(1 - clamp((vh - top) / (vh * 0.75), 0, 1), 3);
+          e = Math.round(e * 500) / 500;
+          if (e === s.last) return;
+          s.last = e;
+          var q = 1 - e;
+          s.wrap.style.transform = q > 0
+            ? 'perspective(1600px) translate3d(0,' + (q * 60).toFixed(1) + 'px,' + (q * -200).toFixed(1) + 'px) rotateX(' + (q * -16).toFixed(2) + 'deg)'
+            : '';
+        });
+
+        // Hero: the two name lines drift apart as you scroll away
+        if (hero && heroLines.length) {
+          var hp = clamp(y / hero.offsetHeight, 0, 1);
+          heroLines[0].style.transform = 'translate3d(' + (-hp * 8).toFixed(2) + '%,0,0)';
+          if (heroLines[1]) heroLines[1].style.transform = 'translate3d(' + (hp * 8).toFixed(2) + '%,0,0)';
+        }
+
+        // Pull-quote: light up words as it travels up the screen
+        scrubs.forEach(function (s) {
+          var r = s.el.getBoundingClientRect();
+          var sp = clamp((vh * 0.85 - r.top) / (vh * 0.5), 0, 1);
+          var lit = Math.round(sp * s.words.length);
+          if (lit !== s.lit) {
+            for (var j = 0; j < s.words.length; j++) s.words[j].classList.toggle('is-lit', j < lit);
+            s.lit = lit;
+          }
+        });
+      }
+
+      // Marquees: duplicate content to fill the screen twice, then loop it
+      var marquees = Array.prototype.map.call(document.querySelectorAll('[data-marquee]'), function (el) {
+        var track = el.querySelector('.marquee__track');
+        return {
+          el: el,
+          track: track,
+          base: track.querySelector('.marquee__group').innerHTML,
+          dir: el.getAttribute('data-dir') === 'right' ? 1 : -1,
+          x: 0, half: 0, skew: 0, visible: false
+        };
+      });
+      var measuredWidth = 0;
+      function measureMarquees() {
+        if (!motionOK || window.innerWidth === measuredWidth) return;
+        measuredWidth = window.innerWidth;
+        marquees.forEach(function (m) {
+          m.track.innerHTML = '<div class="marquee__group">' + m.base + '</div>';
+          var group = m.track.firstChild;
+          var guard = 0;
+          while (group.offsetWidth < window.innerWidth * 1.2 && guard++ < 12) group.insertAdjacentHTML('beforeend', m.base);
+          m.track.appendChild(group.cloneNode(true));
+          m.half = group.offsetWidth;
+          m.x = m.dir < 0 ? 0 : -m.half;
+        });
+      }
+      function updateMarquees() {
+        marquees.forEach(function (m) {
+          if (!m.visible || !m.half) return;
+          var speed = 0.8 + Math.min(Math.abs(vel), 80) * 0.3;
+          m.x += m.dir * speed;
+          if (m.dir < 0 && m.x <= -m.half) m.x += m.half;
+          if (m.dir > 0 && m.x >= 0) m.x -= m.half;
+          m.skew += (clamp(-vel * 0.25, -10, 10) - m.skew) * 0.12;
+          // Band lies back in 3D (opposite directions for the two bands)
+          m.track.style.transform = 'rotateX(' + (m.dir * -24) + 'deg) translate3d(' + m.x.toFixed(2) + 'px,0,0) skewX(' + m.skew.toFixed(2) + 'deg)';
+        });
+      }
+
+      function frame() {
+        var y = window.scrollY || window.pageYOffset;
+        var scrolled = y !== lastY;
+        vel += ((lastY < 0 ? 0 : y - lastY) - vel) * 0.15;
+        lastY = y;
+        if (scrolled) updateScroll(y);
+        if (motionOK) updateMarquees();
+        if (scrolled || visibleMarquees > 0 || Math.abs(vel) > 0.05) {
+          requestAnimationFrame(frame);
+        } else {
+          running = false;
+        }
+      }
+      function kick() {
+        if (!running) { running = true; requestAnimationFrame(frame); }
+      }
+
+      if (motionOK && 'IntersectionObserver' in window) {
+        var marqueeWatcher = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            marquees.forEach(function (m) {
+              if (m.el === entry.target) m.visible = entry.isIntersecting;
+            });
+          });
+          visibleMarquees = marquees.filter(function (m) { return m.visible; }).length;
+          kick();
+        });
+        marquees.forEach(function (m) { marqueeWatcher.observe(m.el); });
+      }
+      measureMarquees();
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () { measuredWidth = 0; measureMarquees(); });
+      }
+      window.addEventListener('scroll', kick, { passive: true });
+      window.addEventListener('resize', function () { lastY = -1; measureMarquees(); kick(); });
+      kick();
+
+      /* ---------- 9. Intro title sequence, then "play" the hero ---------- */
+      function startHero() {
+        if (scene) scene.start();
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { root.classList.add('is-playing'); });
+        });
+      }
+      function playIntro(done) {
+        var intro = document.querySelector('.intro');
+        if (!intro || !root.classList.contains('show-intro') || !motionOK) {
+          root.classList.remove('show-intro');
+          done();
+          return;
+        }
+        try { sessionStorage.setItem('introSeen', '1'); } catch (e) {}
+
+        var cards = intro.querySelectorAll('.intro__card');
+        var count = intro.querySelector('.intro__count');
+        var bar = intro.querySelector('.intro__bar');
+        var DURATION = 1800;
+        var start = null, shown = -1, finished = false;
+
+        function show(i) {
+          Array.prototype.forEach.call(cards, function (c, j) {
+            c.classList.toggle('is-on', j === i);
+            c.classList.toggle('is-off', j < i);
+          });
+        }
+        function leave() {
+          if (finished) return;
+          finished = true;
+          intro.classList.add('is-leaving');
+          setTimeout(done, 300);
+          setTimeout(function () {
+            root.classList.remove('show-intro');
+            if (intro.parentNode) intro.parentNode.removeChild(intro);
+          }, 1050);
+        }
+        function tick(t) {
+          if (finished) return;
+          if (start === null) start = t;
+          var p = Math.min((t - start) / DURATION, 1);
+          var e = 1 - Math.pow(1 - p, 3);
+          count.textContent = ('00' + Math.round(e * 100)).slice(-3);
+          bar.style.transform = 'scaleX(' + e.toFixed(3) + ')';
+          var i = Math.min(cards.length - 1, Math.floor(p * cards.length));
+          if (i !== shown) { shown = i; show(i); }
+          if (p < 1) requestAnimationFrame(tick);
+          else setTimeout(leave, 300);
+        }
+        intro.addEventListener('click', leave);
+        document.addEventListener('keydown', leave, { once: true });
+        requestAnimationFrame(tick);
+      }
+      playIntro(startHero);
+
+      /* ---------- 10. Copy email to clipboard ---------- */
+      var copyBtn = document.querySelector('[data-copy]');
+      var copyStatus = document.getElementById('copy-status');
+      var copyTimer;
+
+      function legacyCopy(text) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        return ok;
+      }
+      if (copyBtn) {
+        var copyText = copyBtn.querySelector('.copy__text');
+        var copyDefault = copyText.textContent;
+        var report = function (ok) {
+          copyText.textContent = ok ? 'Copied ✓' : 'Copy failed';
+          copyStatus.textContent = ok
+            ? 'Email address copied to clipboard.'
+            : 'Could not copy. Please select the email address and copy it manually.';
+          clearTimeout(copyTimer);
+          copyTimer = setTimeout(function () {
+            copyText.textContent = copyDefault;
+            copyStatus.textContent = '';
+          }, 2400);
+        };
+        copyBtn.addEventListener('click', function () {
+          var text = copyBtn.getAttribute('data-copy');
+          if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(
+              function () { report(true); },
+              function () { report(legacyCopy(text)); }
+            );
+          } else {
+            report(legacyCopy(text));
+          }
+        });
+      }
+
+      /* ---------- 11. Live India time (IST) in the footer ---------- */
+      var clock = document.getElementById('ist-clock');
+      if (clock) {
+        var fmt = null;
+        try {
+          fmt = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
+          });
+        } catch (e) {}
+        var tickClock = function () {
+          var now = new Date();
+          if (fmt) {
+            clock.textContent = fmt.format(now);
+          } else {
+            // Fallback: IST is UTC+05:30
+            var ist = new Date(now.getTime() + (330 + now.getTimezoneOffset()) * 60000);
+            clock.textContent = ist.toTimeString().slice(0, 8);
+          }
+          clock.setAttribute('datetime', now.toISOString());
+        };
+        tickClock();
+        setInterval(tickClock, 1000);
+      }
+
+      /* ---------- 12. Guard placeholder links like href="[GITHUB_URL]" ---------- */
+      document.querySelectorAll('a[href^="["]').forEach(function (a) {
+        var token = a.getAttribute('href');
+        a.title = 'Placeholder: replace ' + token + ' in index.html';
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          console.warn('[portfolio] Placeholder link not replaced yet:', token);
+        });
+      });
+
+      // Everything ran: tell the head failsafe not to strip the .js class
+      window.__siteReady = true;
+    })();
+  </script>
+</body>
+</html>

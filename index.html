@@ -1,0 +1,98 @@
+<!doctype html>
+<!--
+  SASISEKAR R L — "Neural Editorial" portfolio (React + Tailwind CSS)
+  The React app is pre-rendered into #root at build time, so all content is
+  readable without JavaScript. See README.md.
+-->
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ===== SEO ===== -->
+  <title>Sasisekar R L — AI &amp; Data Science Developer</title>
+  <meta name="description" content="Sasisekar R L is an AI &amp; Data Science undergraduate and Python &amp; Django backend developer from Tamil Nadu, India, building AI-powered and backend applications with Python, Django and Machine Learning.">
+  <meta name="author" content="Sasisekar R L">
+  <meta name="robots" content="index, follow">
+  <!-- REPLACE: uncomment once the site is live (a placeholder canonical fails the SEO audit) -->
+  <!-- <link rel="canonical" href="[SITE_URL]"> -->
+
+  <!-- ===== Open Graph / Twitter ===== -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sasisekar R L">
+  <meta property="og:locale" content="en_IN">
+  <meta property="og:title" content="Sasisekar R L — AI &amp; Data Science Developer">
+  <meta property="og:description" content="AI &amp; Data Science undergraduate and Python &amp; Django backend developer building AI-powered and backend applications.">
+  <meta property="og:url" content="[SITE_URL]">
+  <!-- REPLACE [SITE_URL]: social networks need the absolute URL of assets/img/og-image.jpg -->
+  <meta property="og:image" content="[SITE_URL]/assets/img/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Sasisekar R L — AI &amp; Data Science Developer">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sasisekar R L — AI &amp; Data Science Developer">
+  <meta name="twitter:description" content="Building AI-powered and backend applications with Python, Django and Machine Learning.">
+  <meta name="twitter:image" content="[SITE_URL]/assets/img/og-image.jpg">
+
+  <!-- ===== Theme & icons ===== -->
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#07080A">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+
+  <!-- ===== Fonts (self-hosted Google Fonts, latin subset, SIL OFL) ===== -->
+  <link rel="preload" href="/assets/fonts/anton-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/manrope-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/jetbrains-mono-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- Full-screen hero photo: fetch it early (browsers without AVIF skip this hint) -->
+  <link rel="preload" as="image" type="image/avif" imagesrcset="/assets/img/hero-bg-720.avif 720w, /assets/img/hero-bg-1086.avif 1086w" imagesizes="100vw" fetchpriority="high">
+
+  <!-- Before first paint: saved theme, JS flag, entry-screen decision.
+       If the app has not started within 5 s, the motion classes are removed
+       so the pre-rendered content stays visible. -->
+  <script>
+    (function () {
+      var d = document.documentElement;
+      d.classList.add('js');
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') d.setAttribute('data-theme', t);
+      } catch (e) {}
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce) {
+        d.classList.add('motion-pending');
+        // Entry screen ("View Portfolio" → boot sequence) on every visit,
+        // except deep links straight to a section
+        if (!location.hash) d.classList.add('show-preloader');
+      }
+      setTimeout(function () {
+        if (!window.__siteReady) {
+          window.__failsafe = true;
+          d.classList.remove('motion-pending', 'show-preloader');
+        }
+      }, 5000);
+    })();
+  </script>
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Sasisekar R L",
+    "jobTitle": "AI & Data Science Undergraduate · Python & Django Backend Developer",
+    "description": "Building AI-powered and backend applications with Python, Django and Machine Learning.",
+    "email": "mailto:sasisekarsasi8@gmail.com",
+    "telephone": "+91 99528 36291",
+    "address": { "@type": "PostalAddress", "addressRegion": "Tamil Nadu", "addressCountry": "IN" },
+    "affiliation": { "@type": "CollegeOrUniversity", "name": "Stella Mary's College of Engineering" },
+    "knowsAbout": ["Artificial Intelligence", "Machine Learning", "Backend Development", "Python", "Django", "Django REST Framework", "OpenCV", "Data Analytics", "Computer Vision"]
+  }
+  </script>
+</head>
+
+<body>
+  <div id="root"><!--app-html--></div>
+  <script type="module" src="/src/entry-client.jsx"></script>
+</body>
+</html>
