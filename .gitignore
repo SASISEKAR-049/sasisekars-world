@@ -1,0 +1,6 @@
+# Dependencies: restored with `npm install` (package-lock.json pins every version)
+node_modules/
+
+# Build output (`npm run build`)
+dist/
+dist-ssr/
