@@ -46,16 +46,6 @@ export function Reveal({ as = 'div', variants = fadeUp, viewport = view.block, i
   );
 }
 
-/* Moves by `speed` × its own height while the surrounding section crosses the screen */
-export function Parallax({ as = 'span', speed = -0.25, children, ...rest }) {
-  const section = useSection();
-  const own = useRef(null);
-  const progress = useGatedScroll({ target: section || own, offset: ['start end', 'end start'] });
-  const y = useTransform(progress, [0, 1], ['0%', `${speed * 100}%`]);
-  const Tag = motion[as];
-  return <Tag ref={own} style={{ y }} {...rest}>{children}</Tag>;
-}
-
 /* Counts from `from` to `value` once visible. The server renders the final
    value, so it is correct without JavaScript and for screen readers. */
 export function CountUp({ value, from = 0, decimals = 0, seconds = 2.2, format, viewport = view.text, ...rest }) {

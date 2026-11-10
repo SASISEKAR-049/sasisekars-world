@@ -51,7 +51,7 @@ function Marquees() {
   useAnimationFrame(() => {
     if (!full || !inView) return;
     const perFrame = velocity.get() / 60;                // same scale as the old Lenis velocity
-    skewTarget.set(Math.max(-12, Math.min(12, -perFrame * 0.35)));
+    skewTarget.set(Math.max(-6, Math.min(6, -perFrame * 0.2)));
   });
 
   return (

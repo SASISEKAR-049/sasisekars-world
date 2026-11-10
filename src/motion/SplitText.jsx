@@ -50,7 +50,8 @@ export function SplitText({
     if (typeof outerRef === 'function') outerRef(el);
     else if (outerRef) outerRef.current = el;
   }, [outerRef]);
-  const words = useMemo(() => text.split(/\s+/).filter(Boolean), [text]);
+  // Split on ordinary spaces only: a non-breaking space keeps its words together
+  const words = useMemo(() => text.split(/[ \t\n\r]+/).filter(Boolean), [text]);
   const lineOf = useLines(ref, by === 'lines', words.length);
 
   const unitVariants = timed(calm ? calmOf(variants) : variants, stagger, delay);

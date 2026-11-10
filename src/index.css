@@ -14,7 +14,7 @@
 
 /* ---------- 1. Fonts (self-hosted, preloaded in index.html) ---------- */
 @font-face { font-family: "Orbitron"; font-weight: 400 900; font-display: swap; src: url("/assets/fonts/orbitron-var-latin.woff2") format("woff2"); }
-@font-face { font-family: "Manrope"; font-weight: 200 800; font-display: swap; src: url("/assets/fonts/manrope-var-latin.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 100 900; font-display: swap; src: url("/assets/fonts/inter-var-latin.woff2") format("woff2"); }
 @font-face { font-family: "JetBrains Mono"; font-weight: 100 800; font-display: swap; src: url("/assets/fonts/jetbrains-mono-var-latin.woff2") format("woff2"); }
 
 /* ---------- 2. Theme tokens → Tailwind utilities ---------- */
@@ -58,13 +58,16 @@
   --color-cursor: var(--cursor);
   --color-on-cursor: var(--on-cursor);
 
-  --font-display: "Orbitron", "Manrope", system-ui, sans-serif;          /* headings, big numbers */
-  --font-ui: "Orbitron", "JetBrains Mono", ui-monospace, monospace;      /* labels, buttons, nav (font-ui) */
-  --font-sans: "Manrope", "General Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  /* Orbitron (a free ROG-style face) for display; Inter for reading and UI.
+     JetBrains Mono follows in each stack only for glyphs the latin subsets
+     lack (→ ↗ ← ✦ ·) */
+  --font-display: "Orbitron", "Inter", "JetBrains Mono", system-ui, sans-serif;   /* headings, giant name */
+  --font-ui: "Inter", "JetBrains Mono", system-ui, sans-serif;          /* buttons, nav (font-ui) */
+  --font-sans: "Inter", "JetBrains Mono", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;   /* code-like text: typewriter, chips, terminal */
 
-  --text-hero: clamp(32px, 9.2vw, 184px);
-  --text-h2: clamp(30px, 6.8vw, 124px);
+  --text-hero: clamp(40px, 7vw, 150px);
+  --text-h2: clamp(30px, 6.4vw, 118px);
   --text-lead: clamp(19px, 1.5vw, 26px);
   --text-body: clamp(16px, 0.3vw + 15px, 19px);
 
@@ -76,7 +79,8 @@
    The ONLY place colours are defined. Everything else (Tailwind classes, the
    WebGL field, the skills graph, the theme-color meta) reads these variables.
    Written in OKLCH (lightness chroma hue) so lightness steps are even:
-   one cool-neutral ramp, one accent hue (266, blue) and one signal hue (182, teal).
+   one neutral ramp and one accent family: ROG red (hue ~25) with a warmer
+   red-orange as the signal colour.
    `npm run check:colors` measures every pair below against WCAG AA.
 
    A theme is a scope, not just the page: any element with data-theme gets
@@ -85,33 +89,32 @@
 :root,
 [data-theme="dark"] {
   color-scheme: dark;
-  /* Neutrals: lightness steps of 0.04 */
-  --bg: oklch(0.14 0.006 265);               /* page */
-  --surface: oklch(0.18 0.008 265);          /* alternate sections, cards */
-  --surface-raised: oklch(0.22 0.010 265);   /* floating UI: toast, previews */
-  --deep: oklch(0.17 0.035 268);             /* contact: the neutral pulled toward the accent */
-  --line: oklch(0.28 0.010 265);             /* hairlines, card outlines (decorative) */
-  --line-strong: oklch(0.54 0.012 265);      /* borders of controls, 3:1 on every surface */
-  --text: oklch(0.94 0.004 265);
-  --muted: oklch(0.70 0.012 265);            /* secondary text */
-  --dim: oklch(0.64 0.012 265);              /* tertiary text, still AA */
-  /* Brand */
-  --accent: oklch(0.70 0.150 266);
-  --accent-hover: oklch(0.78 0.105 266);
-  --accent-soft: oklch(0.26 0.065 266);      /* tinted background */
-  --on-accent: oklch(0.14 0.020 266);
-  /* Signal */
-  --accent-2: oklch(0.82 0.135 182);
-  --accent-2-soft: oklch(0.26 0.040 182);
+  /* Neutrals: near-black, lightness steps of 0.04 */
+  --bg: oklch(0.13 0.005 265);               /* page */
+  --surface: oklch(0.17 0.005 265);          /* alternate sections, cards */
+  --surface-raised: oklch(0.21 0.006 265);   /* floating UI: toast, previews */
+  --deep: oklch(0.155 0.022 25);             /* contact: the neutral pulled toward the accent */
+  --line: oklch(0.27 0.005 265);             /* hairlines, card outlines (decorative) */
+  --line-strong: oklch(0.55 0.006 265);      /* borders of controls, 3:1 on every surface */
+  --text: oklch(0.95 0 0);
+  --muted: oklch(0.74 0 0);                  /* secondary text */
+  --dim: oklch(0.67 0 0);                    /* tertiary text, still AA */
+  /* Brand: ROG red */
+  --accent: oklch(0.64 0.240 27);
+  --accent-hover: oklch(0.70 0.185 27);
+  --accent-soft: oklch(0.22 0.075 27);       /* tinted background */
+  --on-accent: oklch(0.13 0.005 265);        /* near-black: reads on red better than white */
+  /* Signal: a warmer red-orange */
+  --accent-2: oklch(0.74 0.160 42);
+  --accent-2-soft: oklch(0.25 0.060 42);
   /* States */
   --success: oklch(0.78 0.150 155);
   --warning: oklch(0.82 0.130 82);
-  --error: oklch(0.72 0.160 25);
+  --error: oklch(0.72 0.170 10);
   /* Effects */
   --glow: color-mix(in oklab, var(--accent) 45%, transparent);
   --shadow: oklch(0 0 0 / 0.5);
   --scrub-rest: 0.5;                         /* opacity of un-lit words in scroll scrubs */
-  --grain: 0.07;
   /* WebGL neural field */
   --neural-point: var(--text);
   --neural-line: var(--muted);
@@ -122,33 +125,32 @@
 }
 [data-theme="light"] {
   color-scheme: light;
-  /* Neutrals: warm paper, lightness steps of 0.03 */
-  --bg: oklch(0.96 0.004 95);
-  --surface: oklch(0.93 0.005 95);
-  --surface-raised: oklch(0.99 0.003 95);
-  --deep: oklch(0.925 0.018 268);
-  --line: oklch(0.87 0.006 95);
-  --line-strong: oklch(0.58 0.008 95);
-  --text: oklch(0.17 0.005 265);
-  --muted: oklch(0.45 0.008 265);
-  --dim: oklch(0.49 0.008 265);
-  /* Brand */
-  --accent: oklch(0.49 0.215 266);
-  --accent-hover: oklch(0.42 0.200 266);
-  --accent-soft: oklch(0.90 0.042 266);
-  --on-accent: oklch(0.99 0.003 95);
+  /* Neutrals: crisp white, lightness steps of 0.03 */
+  --bg: oklch(0.985 0 0);
+  --surface: oklch(0.955 0 0);
+  --surface-raised: oklch(1 0 0);
+  --deep: oklch(0.955 0.018 25);
+  --line: oklch(0.90 0 0);
+  --line-strong: oklch(0.60 0 0);
+  --text: oklch(0.16 0.005 265);
+  --muted: oklch(0.46 0 0);
+  --dim: oklch(0.50 0 0);
+  /* Brand: a deeper ROG red (bright red is hard to read on white) */
+  --accent: oklch(0.52 0.200 27);
+  --accent-hover: oklch(0.45 0.180 27);
+  --accent-soft: oklch(0.94 0.028 27);
+  --on-accent: oklch(0.99 0 0);
   /* Signal */
-  --accent-2: oklch(0.47 0.080 182);
-  --accent-2-soft: oklch(0.90 0.040 182);
+  --accent-2: oklch(0.50 0.140 42);
+  --accent-2-soft: oklch(0.94 0.028 42);
   /* States */
   --success: oklch(0.46 0.105 155);
   --warning: oklch(0.48 0.095 75);
-  --error: oklch(0.50 0.180 27);
+  --error: oklch(0.50 0.190 10);
   /* Effects */
   --glow: color-mix(in oklab, var(--accent) 30%, transparent);
   --shadow: oklch(0.17 0.005 265 / 0.16);
   --scrub-rest: 0.62;
-  --grain: 0.1;
   /* WebGL neural field */
   --neural-point-alpha: 0.7;
   --neural-line-alpha: 0.3;
@@ -198,6 +200,9 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+  /* A theme scope (e.g. the always-dark hero or entry screen) re-sets the
+     inherited text colour too, not just the variables */
+  [data-theme] { color: var(--text); }
   ::selection { background: var(--selection); color: var(--on-selection); }
   :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; }
   main:focus, .case:focus { outline: none; }
@@ -233,14 +238,14 @@ html:not(.has-motion):not(.motion-pending) [data-m] {
   .display {
     font-family: var(--font-display);
     font-weight: 800;
-    line-height: 0.92;
-    letter-spacing: 0;
+    line-height: 0.95;
+    letter-spacing: 0.01em;
     text-transform: uppercase;
     overflow-wrap: break-word;
   }
   .label {
-    font: 600 11px/1.6 var(--font-ui);
-    letter-spacing: 0.1em;
+    font: 500 12px/1.5 var(--font-mono);
+    letter-spacing: -0.02em;
     text-transform: uppercase;
     color: var(--muted);
   }
@@ -268,8 +273,8 @@ html:not(.has-motion):not(.motion-pending) [data-m] {
     overflow: hidden;
     isolation: isolate;
     color: var(--text);
-    font: 600 12px/1 var(--font-ui);
-    letter-spacing: 0.12em;
+    font: 800 14px/1 var(--font-ui);
+    letter-spacing: -0.02em;
     text-transform: uppercase;
     white-space: nowrap;
   }
@@ -300,8 +305,8 @@ html:not(.has-motion):not(.motion-pending) [data-m] {
     height: 44px;
     padding: 0 14px;
     border: 1px solid var(--line-strong);
-    font: 600 11px/1 var(--font-ui);
-    letter-spacing: 0.1em;
+    font: 800 13px/1 var(--font-ui);
+    letter-spacing: -0.02em;
     text-transform: uppercase;
   }
   .icon-btn__fill { position: absolute; inset: -1px; border: 1px solid var(--text); pointer-events: none; }
@@ -344,12 +349,6 @@ html:not(.has-motion):not(.motion-pending) [data-m] {
     opacity: 0;
   }
 
-  .section-index {
-    font-family: var(--font-display);
-    font-weight: 700;
-    color: transparent;
-    -webkit-text-stroke: 1px var(--line);
-  }
   .outline-text { color: transparent; -webkit-text-stroke: 1px var(--text); }
 
   /* <SplitText> pieces */
@@ -359,42 +358,69 @@ html:not(.has-motion):not(.motion-pending) [data-m] {
 }
 
 /* ---------- 7. Page layers ---------- */
-.grain {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-.gridlines__inner { grid-template-columns: repeat(var(--cols), 1fr); }
-.gridlines span:nth-child(n + 5) { display: none; }
-@media (min-width: 768px)  { .gridlines span:nth-child(-n + 6) { display: block; } }
-@media (min-width: 1024px) { .gridlines span { display: block; } }
-
-/* Full-screen hero photo (--n strips, --i index) */
-.hero-bg { --n: 1; height: 100vh; height: 100svh; }
-.hero-bg__strip { left: calc(var(--i, 0) * 100% / var(--n)); width: calc(100% / var(--n)); }
-.hero-bg__strip img { left: calc(var(--i, 0) * -100%); width: calc(var(--n) * 100%); max-width: none; object-position: 52% 30%; }
-.hero-bg__strip + .hero-bg__strip::after {
-  content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 1px; z-index: 1;
-  background: var(--hero-veil-3);
-}
+/* ---- Hero photo: the right part of the screen (all of it on phones), toned
+   down so the accent type reads over it ---- */
+.hero-bg { height: 100vh; height: 100svh; }
+.hero-bg__frame { position: absolute; top: 0; bottom: 0; right: 0; width: 100%; }
+.hero-bg__img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 0%; top: -12%; height: 124%; filter: grayscale(0.4) brightness(0.62) contrast(1.12); }
 .hero-bg__wait { display: none; }
 .motion-pending .hero-bg__wait { display: block; }
 .hero-bg__shade {
-  background: linear-gradient(180deg,
-    var(--hero-veil-4) 0%,
-    var(--hero-veil-2) 35%,
-    var(--hero-veil-3) 68%,
-    var(--bg) 100%);
+  background: linear-gradient(180deg, var(--hero-veil-5) 0%, var(--hero-veil-4) 38%, var(--hero-veil-2) 54%, var(--hero-veil-4) 76%, var(--bg) 100%);
 }
-@media (max-width: 767.98px) {
-  .hero-bg__strip img { top: -28%; height: 135%; object-position: 50% 0%; }
+@media (min-width: 768px) {
+  .hero-bg__frame { width: 62%; }
+  .hero-bg__img { top: 0; height: 100%; object-position: 50% 22%; }
   .hero-bg__shade {
-    background: linear-gradient(180deg,
-      var(--hero-veil-4) 0%,
-      var(--hero-veil-3) 18%,
-      var(--hero-veil-1) 34%,
-      var(--hero-veil-4) 52%,
-      var(--hero-veil-5) 70%,
-      var(--bg) 100%);
+    left: auto; width: 62%;
+    background:
+      linear-gradient(90deg, var(--bg) 0%, var(--hero-veil-3) 18%, transparent 46%),
+      linear-gradient(180deg, var(--hero-veil-5) 0%, var(--hero-veil-4) 26%, var(--hero-veil-3) 36%, transparent 54%, transparent 72%, var(--bg) 100%);
   }
+}
+
+/* ---- Hero type ---- */
+.hero { position: relative; min-height: 100vh; min-height: 100svh; overflow: hidden; }
+.hero__stage {
+  position: relative;
+  min-height: 100vh; min-height: 100svh;
+  display: flex; flex-direction: column; gap: 24px;
+  padding: calc(var(--header-h) + 24px) var(--pad) 40px;
+}
+.hero__word { color: var(--accent); font-family: var(--font-display); font-weight: 900; text-transform: uppercase; pointer-events: none; }
+.hero__row { line-height: 0.9; letter-spacing: 0; white-space: nowrap; }
+.hero__row--single { font-size: 13.4vw; }
+.hero__row--0, .hero__row--1 { display: none; }
+
+.hero__intro { display: grid; justify-items: start; gap: 16px; position: relative; z-index: 3; }
+.hero__headline {
+  font: 800 clamp(20px, 6vw, 42px)/1.08 var(--font-display);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.hero__id { border-left: 4px solid var(--accent); padding: 2px 0 2px 12px; }
+.hero__name { font: 800 clamp(19px, 1.5vw, 22px)/1.1 var(--font-display); letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent); }
+.hero__title { margin-top: 6px; font: 700 12px/1.3 var(--font-ui); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+.hero__actions { display: grid; justify-items: start; gap: 18px; position: relative; z-index: 3; margin-top: auto; width: 100%; }
+.hero__actions > div { width: 100%; }
+.hero__status { font: 600 13px/1.4 var(--font-ui); letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
+
+/* Tablet and desktop: the poster. Two giant rows (top left, bottom right),
+   headline top right, actions bottom left: four corners, one clear centre. */
+@media (min-width: 768px) {
+  .hero__stage { display: block; padding: 0; }
+  .hero__row--single { display: none; }
+  .hero__row--0, .hero__row--1 { display: block; position: absolute; z-index: 2; font-size: 14vw; }
+  .hero__row--0 { left: var(--pad); top: calc(var(--header-h) + 0.06em); }
+  .hero__row--1 { right: var(--pad); bottom: -0.14em; }
+  .hero__intro { position: absolute; right: var(--pad); top: calc(var(--header-h) + 32px); justify-items: end; text-align: right; }
+  .hero__headline { font-size: clamp(18px, 2.5vw, 40px); }
+  .hero__id { justify-self: start; margin-left: 6px; text-align: left; }
+  /* Sits above the SEKAR row: its visible height is about 0.76 × 14vw */
+  .hero__actions { position: absolute; left: var(--pad); bottom: max(9%, calc(14vw * 0.82)); margin: 0; width: auto; }
+  .hero__actions > div { width: auto; }
 }
 
 /* Custom cursor replaces the system one */
@@ -417,7 +443,7 @@ html:not(.has-motion):not(.motion-pending) [data-m] {
 }
 .menu-open .site-header::before { background: transparent; backdrop-filter: none; border-color: transparent; }
 .nav__link.is-active { color: var(--accent); }
-.logo__mark { overflow: hidden; }
+.logo__word { font: 900 clamp(15px, 1.3vw, 19px)/1 var(--font-display); letter-spacing: 0.06em; text-transform: uppercase; }
 html:not(.js) .menu-btn, html:not(.js) .theme-toggle { display: none; }
 html:not(.js) .nav { display: block; }
 @media (max-width: 1099.98px) {
@@ -437,17 +463,6 @@ main { overflow-x: clip; }   /* clips off-screen start states; unlike hidden, ke
 }
 
 /* About */
-.about__pin { margin-bottom: clamp(64px, 8vw, 140px); }
-.about__pin--on { height: 210vh; margin-bottom: 0; }   /* 100vh pinned + 110vh of scrolling */
-.about__quote-wrap { display: flex; align-items: center; }
-.about__pin--on .about__quote-wrap { position: sticky; top: 0; min-height: 100vh; }
-.about__quote {
-  font-size: clamp(34px, 6vw, 112px);
-  font-weight: 600;
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-  max-width: 16ch;
-}
 /* Scroll-scrubbed words: --p goes 0 → 1; at rest they keep --scrub-rest opacity (AA) */
 .scrub-word { opacity: calc(var(--scrub-rest) + (1 - var(--scrub-rest)) * var(--p, 1)); }
 
@@ -485,17 +500,17 @@ main { overflow-x: clip; }   /* clips off-screen start states; unlike hidden, ke
 .marquee__item {
   padding-inline: 0.28em;
   font-family: var(--font-display);
-  font-weight: 800;
-  font-size: clamp(32px, 5.4vw, 96px);
-  line-height: 1.1;
+  font-weight: 700;
+  font-size: clamp(28px, 4.2vw, 76px);
+  line-height: 1.15;
   text-transform: uppercase;
   white-space: nowrap;
   color: transparent;
-  -webkit-text-stroke: 1.2px var(--text);
+  -webkit-text-stroke: 1px var(--muted);
 }
 .marquee__item--fill { color: var(--text); -webkit-text-stroke: 0; }
 .marquee__item--accent { color: var(--accent); -webkit-text-stroke: 0; }
-.marquee__sep { color: var(--accent-2); font-size: clamp(20px, 3vw, 48px); }
+.marquee__sep { color: var(--accent-2); font-size: clamp(16px, 2vw, 32px); }
 @supports not (-webkit-text-stroke: 1px black) { .marquee__item { color: var(--muted); } }
 
 .skills__grid { display: grid; gap: var(--gutter); }
@@ -682,8 +697,8 @@ main { overflow-x: clip; }   /* clips off-screen start states; unlike hidden, ke
 .contact__email {
   justify-self: start;
   text-align: left;
-  font: 700 clamp(22px, 6vw, 120px)/1.05 var(--font-sans);
-  letter-spacing: -0.04em;
+  font: 600 clamp(22px, 4.2vw, 76px)/1.1 var(--font-sans);
+  letter-spacing: -0.03em;
   overflow-wrap: anywhere;
 }
 .contact__links { display: grid; gap: 24px var(--gutter); margin-top: clamp(32px, 4vw, 56px); }
@@ -699,7 +714,7 @@ main { overflow-x: clip; }   /* clips off-screen start states; unlike hidden, ke
 .footer__inner { padding-top: 40px; }
 .footer__row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; }
 .footer__clock time { color: var(--text); font-variant-numeric: tabular-nums; }
-.footer__top { display: inline-flex; align-items: center; gap: 10px; font: 600 11px/1 var(--font-ui); letter-spacing: 0.1em; text-transform: uppercase; padding: 12px 0; }
+.footer__top { display: inline-flex; align-items: center; gap: 10px; font: 700 12px/1 var(--font-ui); letter-spacing: 0.06em; text-transform: uppercase; padding: 12px 0; }
 .footer__top-arrow {
   position: relative;
   display: inline-grid;
@@ -721,8 +736,3 @@ main { overflow-x: clip; }   /* clips off-screen start states; unlike hidden, ke
   pointer-events: none;   /* decorative; its tall letter boxes overlap the row above */
 }
 .spark { position: fixed; left: 0; top: 0; z-index: 260; width: 6px; height: 6px; margin: -3px 0 0 -3px; pointer-events: none; }
-
-/* Reduced motion: no film grain (Motion handles every other effect) */
-@media (prefers-reduced-motion: reduce) {
-  .grain { display: none; }
-}

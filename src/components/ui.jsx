@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { motion } from 'motion/react';
 import { SplitText } from '../motion/SplitText.jsx';
 import { useMagnetic } from '../motion/hooks.js';
-import { Loop, Parallax, SectionContext, view } from '../motion/primitives.jsx';
+import { Loop, SectionContext, view } from '../motion/primitives.jsx';
 import { calm as calmOf, ease, fadeUpSmall, hoverTransition, lineReveal, press, pressSoft, timed } from '../motion/presets.js';
 import { useCalm } from '../motion/MotionRoot.jsx';
 
@@ -160,7 +160,7 @@ export function Section({ id, bg, className = '', labelledBy, sectionRef, plain 
   );
 }
 
-/* "[ 01 / ABOUT ]  meta" row + giant title + outlined parallax index */
+/* "[ 01 / ABOUT ]  meta" row + title */
 export function SectionHead({ index, label, meta, title, id }) {
   return (
     <header className="relative grid gap-[clamp(20px,3vw,40px)] mb-[clamp(56px,7vw,120px)]">
@@ -181,13 +181,6 @@ export function SectionHead({ index, label, meta, title, id }) {
         whileInView="show"
         viewport={view.text}
       />
-      <Parallax
-        speed={-0.25}
-        className="section-index absolute right-0 top-[30%] -z-10 text-[clamp(70px,13vw,230px)] leading-[0.9] pointer-events-none select-none"
-        aria-hidden="true"
-      >
-        {index}
-      </Parallax>
     </header>
   );
 }

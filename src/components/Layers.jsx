@@ -1,7 +1,7 @@
-/* Page-level layers: section backdrop, hero photo, WebGL canvas, grid lines,
-   grain, custom cursor and the "ai" easter egg. */
+/* Page-level layers: section backdrop, hero photo (iris intro + living photo),
+   WebGL canvas, custom cursor and the "ai" easter egg. */
 import { useEffect, useRef, useState } from 'react';
-import { animate, motion, steps, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from 'motion/react';
+import { animate, motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from 'motion/react';
 import { Picture } from './ui.jsx';
 import { useTheme } from './Theme.jsx';
 import { useToast } from './Toast.jsx';
@@ -47,46 +47,39 @@ export function SectionBackdrop() {
 }
 
 /* ---------- Hero photo ----------
-   One still image by default (server render, reduced motion). With full
-   motion it is cut into vertical strips (8, or 5 on phones) that open from
-   the centre in the intro and slide apart as the hero scrolls away. */
-const stripPhoto = {
-  hidden: ({ up }) => ({ y: up ? '-10%' : '10%', scale: 1.12 }),
-  show: ({ order }) => ({ y: '0%', scale: 1, transition: { duration: 2.1, ease: ease.outExpo, delay: 1.3 + order * 0.08 } })
-};
-const stripCover = {
-  hidden: { scaleY: 1 },
-  show: ({ order }) => ({ scaleY: 0, transition: { duration: 1.4, ease: ease.io, delay: 1.2 + order * 0.08 } })
-};
-
+   The photo fills the right part of the landing page (all of it on phones),
+   toned down and faded into the page so the accent type reads over it.
+   Server render and reduced motion: the still photo.
+   Full motion:
+   - Intro: the photo opens as an iris from the centre while it settles from 1.25×.
+   - Living photo: it then keeps breathing (a very slow push-in) and tilts
+     toward the mouse, like looking through a window.
+   - Scroll: the photo zooms and drifts down. */
 const heroPicture = {
-  name: 'hero-bg',
+  name: 'hero-color',
   widths: [720, 1086],
   sizes: '100vw',
   alt: '',
   width: '1086',
   height: '1448',
-  className: 'absolute top-0 h-full object-cover'
+  className: 'hero-bg__img'
 };
 
-function Strip({ i, n, show, progress }) {
-  const up = i % 2 === 0;                                             // even strips travel up, odd ones down
-  const order = Math.abs(i - (n - 1) / 2) - (n % 2 === 0 ? 0.5 : 0);  // 0 at the centre, growing outward
-  const y = useTransform(progress, [0, 1], ['0%', up ? '-24%' : '24%']);
-  const custom = { up, order };
-  return (
-    <motion.div className="hero-bg__strip absolute top-0 bottom-0 overflow-hidden" style={{ '--i': i, y }} initial="hidden" animate={show ? 'show' : 'hidden'}>
-      <Picture {...heroPicture} fetchPriority={i === 0 ? 'high' : undefined} motionProps={{ variants: stripPhoto, custom }} />
-      <motion.span className="absolute inset-0 z-[2] bg-paper" variants={stripCover} custom={custom} style={{ originY: up ? 0 : 1 }} />
-    </motion.div>
-  );
-}
+const iris = {
+  hidden: { clipPath: 'circle(0% at 52% 42%)' },
+  show: { clipPath: 'circle(150% at 52% 42%)', transition: { duration: 1.8, ease: ease.io, delay: 0.9 } }
+};
+const settle = {
+  hidden: { scale: 1.25 },
+  show: { scale: 1, transition: { duration: 2.6, ease: ease.outExpo, delay: 0.9 } }
+};
 
 export function HeroBackground({ heroRef }) {
-  const { mode, full, phone, intro } = useMotionMode();
+  const { mode, full, fine, intro } = useMotionMode();
   const [height, setHeight] = useState(null);
   const progress = useGatedScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const n = full ? (phone ? 5 : 8) : 1;
+  const zoom = useTransform(progress, [0, 1], [1, 1.15]);
+  const drift = useTransform(progress, [0, 1], ['0%', '12%']);
 
   // Keep this page-level layer exactly as tall as the hero section
   useEffect(() => {
@@ -98,64 +91,104 @@ export function HeroBackground({ heroRef }) {
   }, [heroRef]);
 
   return (
-    <div className="hero-bg absolute top-0 left-0 w-full z-0 overflow-hidden pointer-events-none" style={{ '--n': n, height: height ?? undefined }} aria-hidden="true">
-      {/* key: switching between the still and the strips remounts them in their start state */}
-      <div className="absolute inset-0" key={n}>
-        {full
-          ? Array.from({ length: n }, (_, i) => <Strip key={i} i={i} n={n} show={intro} progress={progress} />)
-          : (
-            <div className="hero-bg__strip absolute top-0 bottom-0 overflow-hidden" style={{ '--i': 0 }}>
-              <Picture {...heroPicture} fetchPriority="high" />
-              {/* Hides the photo until the app has decided between still and strips */}
-              {mode === 'pending' && <span className="hero-bg__wait absolute inset-0 z-[2] bg-paper" />}
-            </div>
-          )}
-      </div>
+    <div className="hero-bg absolute top-0 left-0 w-full z-0 overflow-hidden pointer-events-none bg-paper" data-theme="dark" style={{ height: height ?? undefined }} aria-hidden="true">
+      {/* key: switching between the still and the animated photo remounts it in its start state */}
+      <motion.div className="hero-bg__frame" key={full ? 'motion' : 'still'} style={full ? { scale: zoom, y: drift } : undefined}>
+        {full ? (
+          <motion.div className="absolute inset-0 overflow-hidden" variants={iris} initial="hidden" animate={intro ? 'show' : 'hidden'}>
+            <motion.div className="absolute inset-0" variants={settle}>
+              <LivingPhoto fine={fine}>
+                <Picture {...heroPicture} fetchPriority="high" />
+              </LivingPhoto>
+            </motion.div>
+          </motion.div>
+        ) : (
+          <div className="absolute inset-0 overflow-hidden">
+            <Picture {...heroPicture} fetchPriority="high" />
+            {/* Hides the photo until the app has decided between the still and the animated version */}
+            {mode === 'pending' && <span className="hero-bg__wait absolute inset-0 z-[2] bg-paper" />}
+          </div>
+        )}
+      </motion.div>
       <div className="hero-bg__shade absolute inset-0 z-[3]" />
     </div>
   );
 }
 
+/* "Living photo": the still photo made to feel alive without video.
+   - Breathing: an endless, very slow push-in and sideways drift.
+   - Depth: the photo plane tilts a couple of degrees toward the mouse; on
+     touch screens it sways gently by itself.
+   Both run only while the hero is on screen (Loop) and only with full motion.
+   The scale never drops below 1.04, so tilting never shows an edge. */
+function LivingPhoto({ fine, children }) {
+  const rx = useMotionValue(0);
+  const ry = useMotionValue(0);
+  const rotateX = useSpring(rx, spring.soft);
+  const rotateY = useSpring(ry, spring.soft);
+
+  useEffect(() => {
+    if (!fine) return undefined;
+    const tilt = () => {
+      if (!pointer.seen) return;
+      ry.set((pointer.x.get() / window.innerWidth - 0.5) * 3);     // ±1.5°
+      rx.set((0.5 - pointer.y.get() / window.innerHeight) * 2);    // ±1°
+    };
+    const offs = [pointer.x.on('change', tilt), pointer.y.on('change', tilt)];
+    return () => offs.forEach((off) => off());
+  }, [fine, rx, ry]);
+
+  const breathe = { scale: [1.04, 1.1, 1.04], x: ['0%', '-1%', '0%'] };
+  return (
+    <motion.div className="absolute inset-0" style={{ rotateX, rotateY, transformPerspective: 1400 }}>
+      <Loop
+        as="div"
+        className="absolute inset-0"
+        style={{ scale: 1.04 }}
+        animate={fine ? breathe : { ...breathe, rotateY: [-1.2, 1.2, -1.2], rotateX: [0.6, -0.6, 0.6] }}
+        transition={{ duration: 26, ease: ease.sine }}
+      >
+        {children}
+      </Loop>
+    </motion.div>
+  );
+}
+
 /* ---------- WebGL neural field ----------
-   Three.js is imported in idle time after the intro. Its camera fly-through
-   and ring formation are Motion values derived from scroll; the canvas fade
-   is a Motion value too. Colours are read from the CSS tokens. */
+   Shown behind the contact section only (the finale). Three.js is imported in
+   idle time after the intro. The camera pull-back and ring formation are
+   Motion values derived from scroll; the canvas fade is a Motion value too.
+   Colours are read from the CSS tokens. */
 export const neuralHandle = { current: null };   // lets the easter egg reach the field
 
 export function NeuralCanvas() {
   const { mode, full, intro, phone, fine } = useMotionMode();
   // The sections are found by id: they exist as server-rendered markup even
   // before their Suspense boundaries hydrate. Declared before useScroll, so it runs first.
-  const heroRef = useRef(null);
   const contactRef = useRef(null);
   useIsoLayoutEffect(() => {
-    heroRef.current = document.getElementById('top');
     contactRef.current = document.getElementById('contact');
   }, []);
   const { theme } = useTheme();
   const canvasRef = useRef(null);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
   const opacity = useMotionValue(0);
 
-  // 0 → 1 while the hero scrolls away; 0 → 1 while the contact section arrives
-  const hero = useScroll({ target: heroRef, offset: ['start start', 'end start'] }).scrollYProgress;
+  // 0 → 1 while the contact section arrives: the camera pulls back out of the
+  // field and the particles gather into a ring
   const contact = useScroll({ target: contactRef, offset: ['start end', 'center center'] }).scrollYProgress;
-  // Camera flies through the field, then pulls back for the contact section.
-  // (Both values are read every time so Motion tracks both as dependencies.)
-  const fly = useTransform(() => { const c = contact.get(); const h = hero.get(); return c > 0 ? 1 - c : h; });
-  const converge = contact;                                                               // particles gather into a ring
+  const fly = useTransform(contact, (c) => 1 - c);
+  const converge = contact;
 
   useMotionValueEvent(fly, 'change', (v) => neuralHandle.current?.setFly(v));
   useMotionValueEvent(converge, 'change', (v) => neuralHandle.current?.setConverge(v));
-  const syncVisible = () => setVisible(hero.get() < 1 || contact.get() > 0);
-  useMotionValueEvent(hero, 'change', syncVisible);
-  useMotionValueEvent(contact, 'change', syncVisible);
+  useMotionValueEvent(contact, 'change', (c) => setVisible(c > 0));
 
   // Create the scene once the intro has started and the browser is idle
   useEffect(() => {
-    if (mode === 'pending' || !intro || failed) return undefined;
+    if (!full || !intro || failed) return undefined;
     let neural = null;
     let cancelled = false;
     const load = async () => {
@@ -187,8 +220,8 @@ export function NeuralCanvas() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, intro, failed, full]);
 
-  // Fade in and out; rendering pauses while hidden. A reduced-motion still stays on.
-  const shown = ready && (visible || !full);
+  // Fade in and out; rendering pauses while hidden
+  const shown = ready && visible;
   useEffect(() => {
     if (!ready) return undefined;
     neuralHandle.current?.setVisible(shown);
@@ -199,38 +232,15 @@ export function NeuralCanvas() {
   // New palette: read the tokens again
   useEffect(() => { neuralHandle.current?.syncColors(); }, [theme, ready]);
 
-  if (failed) return null;
+  // Decorative and animated: not rendered with reduced motion
+  if (failed || mode === 'calm') return null;
   return (
     <motion.canvas
       ref={canvasRef}
-      className={`neural inset-0 w-full z-0 pointer-events-none ${mode === 'calm' ? 'absolute h-screen' : 'fixed h-full'}`}
+      className="neural fixed inset-0 w-full h-full z-0 pointer-events-none"
       style={{ opacity }}
       aria-hidden="true"
     />
-  );
-}
-
-export function GridLines() {
-  return (
-    <div className="gridlines fixed inset-0 z-[1] pointer-events-none" aria-hidden="true">
-      <div className="gridlines__inner grid h-full max-w-(--maxw) mx-auto px-(--pad) gap-x-(--gutter)">
-        {Array.from({ length: 12 }, (_, i) => <span key={i} className="border-x border-line opacity-30" />)}
-      </div>
-    </div>
-  );
-}
-
-/* Film grain: the texture jumps between six offsets (hidden for reduced motion) */
-export function Grain() {
-  return (
-    <div className="fixed inset-0 z-[95] pointer-events-none overflow-hidden" aria-hidden="true">
-      <Loop
-        as="div"
-        className="grain absolute -inset-[10%] opacity-(--grain)"
-        animate={{ x: ['0%', '-3%', '2%', '-2%', '3%', '0%'], y: ['0%', '2%', '-3%', '-1%', '3%', '0%'] }}
-        transition={{ duration: 0.9, ease: steps(6) }}
-      />
-    </div>
   );
 }
 

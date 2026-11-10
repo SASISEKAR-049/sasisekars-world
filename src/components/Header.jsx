@@ -83,20 +83,20 @@ export function Header() {
       inert={preloading && !intro}
     >
       <div className="wrap site-header__inner relative h-full flex items-center gap-[clamp(16px,2vw,32px)]">
-        <motion.a className="logo inline-flex items-center gap-2.5 mr-auto" href="#top" data-cursor="TOP" initial="rest" whileHover="hover" whileFocus="hover" whileTap="press" variants={{ press }}>
-          <span className="logo__mark relative font-mono font-bold text-[11px] leading-none text-accent border border-accent px-1.5 py-[5px]" aria-hidden="true">
-            S/
+        <motion.a className="logo mr-auto" href="#top" data-cursor="TOP" aria-label={`${profile.name}, back to top`} initial="rest" whileHover="hover" whileFocus="hover" whileTap="press" variants={{ press }}>
+          {/* Lowercase wordmark; the accent copy wipes up over it on hover */}
+          <span className="logo__word relative block overflow-hidden" aria-hidden="true">
+            {profile.first}
             <motion.span
-              className="absolute -inset-px grid place-items-center bg-accent text-on-accent"
+              className="absolute inset-0 text-accent"
               variants={{
                 rest: { clipPath: 'inset(100% 0% 0% 0%)', transition: hoverTransition },
                 hover: { clipPath: 'inset(0% 0% 0% 0%)', transition: hoverTransition }
               }}
             >
-              S/
+              {profile.first}
             </motion.span>
           </span>
-          <span className="font-display font-extrabold text-[13px] min-[400px]:text-[15px] tracking-[0.04em] leading-none whitespace-nowrap">{profile.name}</span>
         </motion.a>
 
         <nav className="nav hidden wide:block" aria-label="Primary">
@@ -105,7 +105,7 @@ export function Header() {
               <li key={n.id}>
                 <Roll
                   href={`#${n.id}`}
-                  className={`nav__link font-ui text-[11px] font-semibold tracking-[0.1em] uppercase${active === n.id ? ' is-active' : ''}`}
+                  className={`nav__link font-ui text-[15px] font-extrabold tracking-[-0.03em] uppercase${active === n.id ? ' is-active' : ''}`}
                   aria-current={active === n.id ? 'location' : undefined}
                 >
                   {n.label}

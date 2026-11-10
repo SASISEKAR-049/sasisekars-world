@@ -1,5 +1,5 @@
-/* About: scroll-scrubbed quote (pinned on desktop), portrait with a
-   computer-vision scan overlay, bio, counters. */
+/* About: portrait with a computer-vision scan overlay, scroll-scrubbed bio,
+   counters. (The quote is the landing page headline.) */
 import { useEffect, useRef } from 'react';
 import { animate, motion, useInView, useMotionValue, useMotionValueEvent, useTransform } from 'motion/react';
 import { about } from '../data/content.js';
@@ -10,29 +10,13 @@ import { CountUp, DrawRect, Loop, Reveal, view } from '../motion/primitives.jsx'
 import { calm as calmOf, clipReveal, ease, fadeUp, zoomSettle } from '../motion/presets.js';
 
 export default function About() {
-  const { full, desktop } = useMotionMode();
-  const pin = full && desktop;
-  const pinRef = useRef(null);
   const bioRef = useRef(null);
-
-  // Quote: pinned for 110vh of scrolling on desktop, otherwise lit while it crosses the screen
-  const quoteProgress = useGatedScroll({
-    target: pinRef,
-    offset: pin ? ['start start', 'end end'] : ['start 0.82', 'end 0.5'],
-    rest: 1
-  });
   const bioProgress = useGatedScroll({ target: bioRef, offset: ['start 0.82', 'end 0.5'], rest: 1 });
 
   return (
     <Section className="about" id="about" labelledBy="about-title" bg="surface">
       <div className="wrap">
         <SectionHead index="01" label="ABOUT" meta="PROFILE · STELLA MARY’S COLLEGE OF ENGINEERING" title="About" id="about-title" />
-
-        <div ref={pinRef} className={`about__pin${pin ? ' about__pin--on' : ''}`}>
-          <div className="about__quote-wrap">
-            <ScrubText className="about__quote" text={about.quote} progress={quoteProgress} />
-          </div>
-        </div>
 
         <div className="about__grid">
           <Portrait />

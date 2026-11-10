@@ -14,7 +14,7 @@ import Experience from './components/Experience.jsx';
 import Education from './components/Education.jsx';
 import { Contact, Footer } from './components/Contact.jsx';
 import Preloader from './components/Preloader.jsx';
-import { Cursor, EasterEgg, GridLines, Grain, HeroBackground, NeuralCanvas, SectionBackdrop } from './components/Layers.jsx';
+import { Cursor, EasterEgg, HeroBackground, NeuralCanvas, SectionBackdrop } from './components/Layers.jsx';
 
 export default function App() {
   return (
@@ -40,7 +40,6 @@ function Page() {
       <SectionBackdrop />
       <HeroBackground heroRef={heroRef} />
       <NeuralCanvas />
-      <GridLines />
       <Header />
       <Menu />
       <main id="main" tabIndex={-1} inert={locked}>
@@ -55,7 +54,6 @@ function Page() {
         <Suspense fallback={null}><Contact /></Suspense>
       </main>
       <Suspense fallback={null}><Footer inert={locked} /></Suspense>
-      <Grain />
       <Cursor />
       <EasterEgg />
     </>

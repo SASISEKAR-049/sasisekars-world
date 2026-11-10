@@ -1,6 +1,6 @@
 # Sasisekar R L — "Neural Editorial" portfolio
 
-A cinematic, animated personal portfolio for an AI & Data Science developer. The layout is editorial (oversized type, strict grid, hairlines), and a live neural-network particle field runs behind the hero and the contact section.
+A cinematic, animated personal portfolio for an AI & Data Science developer. The style is a dark ROG-inspired poster: near-black, one ROG red accent, Orbitron display type. The landing page sets your name huge across the screen over your photo, and a live neural-network particle field forms behind the contact section.
 
 Built with React 19, Tailwind CSS 4 and Vite 7. The page is pre-rendered at build time (so all content is readable without JavaScript) and React hydrates it. Every animation is a React component or hook built on Motion.
 
@@ -42,7 +42,7 @@ src/lib/color.js           Reads colour tokens from CSS for canvas / WebGL / met
 src/motion/MotionRoot.jsx  MotionConfig, motion mode, intro, Lenis, anchor links
 src/motion/presets.js      Easings, durations, springs and shared variants
 src/motion/SplitText.jsx   Splits text into chars / words / lines (accessible)
-src/motion/primitives.jsx  Reveal, Parallax, CountUp, DrawRect, Glare, Loop
+src/motion/primitives.jsx  Reveal, CountUp, DrawRect, Glare, Loop
 src/motion/hooks.js        useMagnetic, useTilt, useScramble, useTypewriter
 src/webgl/neural.js        Three.js particle network
 scripts/prerender.mjs      Injects the server render into dist/index.html
@@ -72,7 +72,7 @@ Until a link is replaced it does nothing when clicked and logs a reminder in the
 ### Images
 
 - **Portrait**: `assets/img/portrait-600|1000.avif|webp|jpg` were generated from your photo `assets/img/myphotd.jpeg` as a 4:5 head-and-shoulders crop. The page serves AVIF, then WebP, then JPEG, depending on browser support. It is shown in greyscale and turns to colour on hover. To use a different photo, export a 4:5 crop in the same three formats and sizes. Then move the face-scan box (the `DrawRect`, corners path and tag in `Scan` in `src/components/About.jsx`, 400×500 coordinates) so it frames the new face.
-- **Full-screen hero photo**: `assets/img/hero-bg-720|1086.avif|webp|jpg` is the whole photo in greyscale. It fills the hero behind the name, under a gradient that keeps the text readable. With full motion it is rendered as vertical strips (8 on desktop, 5 on phones) that open from the centre in the intro and split apart as you scroll. Without motion it is one still image. To reframe it, change `object-position` on `.hero-bg__strip img` in `src/index.css`; phones use their own `top`/`height` values so the face sits above the name.
+- **Full-screen hero photo**: `assets/img/hero-color-720|1086.avif|webp|jpg` is the whole photo (`myphotd.jpeg` resized), in colour. It fills the landing page; a light gradient at the bottom keeps the name readable. With full motion it opens as an iris from the centre, then keeps "breathing" (a very slow push-in) and tilts slightly toward the mouse. Scrolling zooms it gently. Without motion it is one still image. To reframe it, change `object-position` on `.hero-bg__img` in `src/index.css`; phones use their own `top`/`height` values so the face sits above the name.
 - **Social preview**: `assets/img/og-image.jpg` (1200×630) combines your name with the same photo.
 - **Project card**: `assets/img/project-smart-attendance-720|1086.*` is your photo as a face-recognition "demo frame": bounding box, facial landmarks, match score and ESP32-CAM readouts baked into the image. When you have a real screenshot of the system, replace these files (16:10) and update the `alt` text.
 - **"Coming soon" cards**: `soon-pixel.*` and `soon-blur.*` are pixelated and blurred versions of your photo, as if the next models are still learning. They are set in CSS (`.card__media--pixel`, `.card__media--blur`).
@@ -99,10 +99,11 @@ Run `npm run build` and publish `dist/`.
 
 - **One library.** Every animation uses Motion (`motion/react`): `motion.*` components with variants, `whileInView`, `whileHover` / `whileTap` / `whileFocus`, `AnimatePresence`, `useScroll` + `useTransform` + `useSpring` for scroll-linked effects, and `useAnimate` for the entry-screen timeline. There are no CSS transitions or keyframes.
 - **Presets.** `src/motion/presets.js` holds the two house curves (`ease.io` = `cubic-bezier(0.76,0,0.24,1)`, `ease.outExpo` = `cubic-bezier(0.16,1,0.3,1)`), durations, springs and the shared variants (`fadeUp`, `staggerChildren`, `lineReveal`, `charReveal`, `clipReveal`, `magnetic`, `tilt`, …). Change a value there and the whole site follows.
-- **Three modes** (`src/motion/MotionRoot.jsx`). *Pending* is the server render. *Full* is everything. *Calm* is used when the visitor prefers reduced motion: nothing travels, reveals become short fades, and there is no smooth scrolling, entry screen, custom cursor, film grain, parallax or looping decoration. The WebGL field renders one still frame. `<MotionConfig reducedMotion="user">` wraps the app as a second safety net.
+- **Three modes** (`src/motion/MotionRoot.jsx`). *Pending* is the server render. *Full* is everything. *Calm* is used when the visitor prefers reduced motion: nothing travels, reveals become short fades, and there is no smooth scrolling, entry screen, custom cursor, spotlight, neural field or looping decoration. `<MotionConfig reducedMotion="user">` wraps the app as a second safety net.
 - **No-JS safe.** Elements that animate in carry `data-m` and are pre-rendered in their start state. CSS forces them visible unless JavaScript is in control (`html.motion-pending` before React starts, `html.has-motion` after). A 5-second failsafe in `<head>` removes the pending class if React never starts.
-- **Performance.** Only `transform`, `opacity`, `clip-path` and `filter` animate. Section colour changes cross-fade two fixed layers. Outlines "draw" with scaled bars, and pipeline colours cross-fade stacked layers. Hydration is split into Suspense boundaries and the motion-mode switch is a React transition, so start-up never blocks the main thread for long. The WebGL scene renders only while the hero or contact section is on screen and the tab is visible: 2,000 particles on desktop, 650 on touch devices. Three.js is imported in idle time after the intro.
+- **Performance.** Only `transform`, `opacity`, `clip-path` and `filter` animate. Section colour changes cross-fade two fixed layers. Outlines "draw" with scaled bars, and pipeline colours cross-fade stacked layers. Hydration is split into Suspense boundaries and the motion-mode switch is a React transition, so start-up never blocks the main thread for long. The WebGL scene renders only while the contact section is on screen and the tab is visible: 2,000 particles on desktop, 650 on touch devices. Three.js is imported in idle time after the intro.
 - **Pinned sections** use CSS `position: sticky` with scroll progress from `useScroll`: the About quote (desktop), the horizontal project gallery (≥1024px) and the stacking experience cards.
+- **Calm by design.** One focal point per screen: no film grain, background grid or decorative section numbers.
 - **Theme toggle.** A curtain in the incoming theme's page colour slides up, the theme switches underneath, then the curtain lifts away (a plain fade with reduced motion). The pre-paint script in `index.html` applies the saved theme before first paint.
 - **Accessibility.** Includes a skip link, visible focus rings, and a keyboard-trapped menu (Escape closes it) with the page behind made `inert`. Split text exposes the whole string once (aria-label or a visually hidden copy), and toasts use `role="status"`. Scroll-scrubbed words rest at a per-theme opacity (`--scrub-rest`) that still meets WCAG AA.
 
@@ -111,7 +112,7 @@ Run `npm run build` and publish `dist/`.
 ## 6. Customising
 
 - **Colours:** the palette is defined once, in OKLCH, at the top of `src/index.css` (`:root, [data-theme="dark"]` and `[data-theme="light"]`) and mapped to Tailwind classes in `@theme inline` (`bg-paper`, `bg-surface`, `bg-raised`, `bg-deep`, `text-ink`, `text-muted`, `text-dim`, `border-line`, `border-line-strong`, `text-accent`, `bg-accent-soft`, `text-signal`, `text-success` …). JavaScript reads the same tokens (`src/lib/color.js`). After changing a colour run `npm run check:colors`. It measures every text, border and state colour against every section background in both themes, and checks that the `theme-color` meta in `index.html` still equals the dark `--bg`.
-- **Fonts and spacing:** the `@theme inline` block and `:root` in `src/index.css`. Three self-hosted fonts (SIL Open Font License): **Orbitron** (`font-display`, `font-ui`) for headings, big numbers, labels, buttons and navigation; **Manrope** for paragraphs; **JetBrains Mono** for code-like text (typewriter, skill chips, boot screen). Orbitron has no arrows or `·`, so `font-ui` falls back to JetBrains Mono for those.
+- **Fonts and spacing:** the `@theme inline` block and `:root` in `src/index.css`. Three self-hosted fonts (SIL Open Font License): **Orbitron** (a free ROG-style face) for headings and the giant name, **Inter** for reading text, buttons and navigation, and **JetBrains Mono** for small labels and code-like text. Glyphs missing from the latin subsets (→ ↗ ← ✦ ·) fall back to JetBrains Mono.
 - **Section background colours:** each section's `bg` prop (`bg`, `surface`, `deep`).
 - **Animation feel:** `src/motion/presets.js`.
 - **Neural field:** particle counts and link distance are constants at the top of `createNeural()` in `src/webgl/neural.js`; its colours are the `--neural-*` tokens.
