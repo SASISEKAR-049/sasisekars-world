@@ -2,19 +2,19 @@
   "name": "sasisekar-portfolio",
   "private": true,
   "version": "5.0.0",
-  "description": "Neural Editorial portfolio of Sasisekar R L (React + Tailwind CSS + GSAP + Three.js)",
+  "description": "Neural Editorial portfolio of Sasisekar R L (React + Tailwind CSS + Motion + Three.js)",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build && vite build --ssr src/entry-server.jsx --outDir dist-ssr && node scripts/prerender.mjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:colors": "node scripts/contrast.mjs"
   },
   "dependencies": {
-    "gsap": "3.15.0",
     "lenis": "1.3.27",
+    "motion": "14.12.0",
     "react": "19.2.9",
     "react-dom": "19.2.9",
-    "split-type": "0.3.4",
     "three": "0.186.1"
   },
   "devDependencies": {

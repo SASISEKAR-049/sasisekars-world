@@ -9,10 +9,11 @@
    3. "Signals" (bright accent points) travel along those links from neuron
       to neuron, choosing a random neighbour at each hop.
 
-   Scroll hooks (wired up in js/main.js):
+   Controls (driven by Motion values in src/components/Layers.jsx):
    setFly(0..1)       camera flies through the field (hero scroll-out)
    setConverge(0..1)  particles gather into a ring (contact section)
-   setVisible(bool)   fades the canvas and pauses rendering when hidden
+   setVisible(bool)   pauses rendering while the canvas is faded out
+   syncColors()       re-reads the --neural-* colour tokens (theme change)
    burst()            pushes every particle outward (Easter egg)
 
    Rendering stops when the canvas is hidden or the tab is in the
@@ -20,6 +21,7 @@
    ========================================================================== */
 
 import * as THREE from 'three';
+import { cssNumber, cssVar, tokenRgb } from '../lib/color.js';
 
 const VERT = /* glsl */ `
   attribute float aSize;
@@ -47,12 +49,21 @@ const FRAG = /* glsl */ `
   }
 `;
 
-const PALETTE = {
-  dark: { point: '#EDEDED', line: '#8A8F98', signal: '#6F94FF', signalAlt: '#00E0C6', lineAlpha: 0.32, pointAlpha: 0.85, blending: THREE.AdditiveBlending },
-  light: { point: '#0B0B0C', line: '#6B6B6B', signal: '#2F5BFF', signalAlt: '#00A892', lineAlpha: 0.3, pointAlpha: 0.7, blending: THREE.NormalBlending }
-};
+/* Colours come from the --neural-* tokens in src/index.css (read again on
+   every theme change), so the field always matches the page palette. */
+function readPalette() {
+  const color = (token) => new THREE.Color().setRGB(...tokenRgb(token).map((c) => c / 255), THREE.SRGBColorSpace);
+  return {
+    point: color('--neural-point'),
+    line: color('--neural-line'),
+    signal: color('--neural-signal'),
+    pointAlpha: cssNumber('--neural-point-alpha', 0.85),
+    lineAlpha: cssNumber('--neural-line-alpha', 0.3),
+    blending: cssVar('--neural-blend') === 'normal' ? THREE.NormalBlending : THREE.AdditiveBlending
+  };
+}
 
-export function createNeural(canvas, { mobile = false, reduced = false, theme = 'dark' } = {}) {
+export function createNeural(canvas, { mobile = false, reduced = false } = {}) {
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: 'high-performance' });
@@ -175,14 +186,14 @@ export function createNeural(canvas, { mobile = false, reduced = false, theme = 
   const ndc = new THREE.Vector3();
   const dir = new THREE.Vector3();
 
-  function setTheme(name) {
-    const p = PALETTE[name] || PALETTE.dark;
-    pMat.uniforms.uColor.value.set(p.point);
+  function syncColors() {
+    const p = readPalette();
+    pMat.uniforms.uColor.value.copy(p.point);
     pMat.uniforms.uOpacity.value = p.pointAlpha;
-    sMat.uniforms.uColor.value.set(p.signal);
+    sMat.uniforms.uColor.value.copy(p.signal);
     pMat.blending = sMat.blending = lMat.blending = p.blending;
     pMat.needsUpdate = sMat.needsUpdate = lMat.needsUpdate = true;
-    lineRGB.set(p.line);
+    lineRGB.copy(p.line);
     lineAlpha = p.lineAlpha;
     if (!running) renderOnce();
   }
@@ -378,21 +389,23 @@ export function createNeural(canvas, { mobile = false, reduced = false, theme = 
   }
 
   /* ----- Events ----- */
-  window.addEventListener('resize', resize);
-  window.addEventListener('pointermove', (e) => {
+  const onPointer = (e) => {
     mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
     mouse.active = e.pointerType === 'mouse';
-  }, { passive: true });
-  document.documentElement.addEventListener('mouseleave', () => { mouse.active = false; });
-  document.addEventListener('visibilitychange', () => {
+  };
+  const onLeave = () => { mouse.active = false; };
+  const onVisibility = () => {
     if (document.hidden) stop();
     else if (visible) start();
-  });
-  document.addEventListener('themechange', (e) => setTheme(e.detail.theme));
+  };
+  window.addEventListener('resize', resize);
+  window.addEventListener('pointermove', onPointer, { passive: true });
+  document.documentElement.addEventListener('mouseleave', onLeave);
+  document.addEventListener('visibilitychange', onVisibility);
 
   let hideTimer = 0;
-  setTheme(theme);
+  syncColors();
   resize();
 
   return {
@@ -401,11 +414,11 @@ export function createNeural(canvas, { mobile = false, reduced = false, theme = 
     setVisible(v) {
       if (v === visible) return;
       visible = v;
-      canvas.classList.toggle('is-visible', v);
       clearTimeout(hideTimer);
       if (v) start();
-      else hideTimer = setTimeout(() => { if (!visible) stop(); }, 900);   // after the CSS fade
+      else hideTimer = setTimeout(() => { if (!visible) stop(); }, 900);   // after the fade-out
     },
+    syncColors,
     burst() {
       for (let i = 0; i < COUNT; i++) {
         const o = i * 3;
@@ -420,6 +433,11 @@ export function createNeural(canvas, { mobile = false, reduced = false, theme = 
     },
     destroy() {
       stop();
+      clearTimeout(hideTimer);
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('pointermove', onPointer);
+      document.documentElement.removeEventListener('mouseleave', onLeave);
+      document.removeEventListener('visibilitychange', onVisibility);
       renderer.dispose();
     }
   };

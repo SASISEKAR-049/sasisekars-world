@@ -36,20 +36,24 @@
 
   <!-- ===== Theme & icons ===== -->
   <meta name="color-scheme" content="dark light">
-  <meta name="theme-color" content="#07080A">
+  <!-- Initial value only (= --bg of the dark theme, checked by `npm run check:colors`).
+       The app replaces it with the live --bg token as soon as it starts. -->
+  <meta name="theme-color" content="#08090C">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 
   <!-- ===== Fonts (self-hosted Google Fonts, latin subset, SIL OFL) ===== -->
-  <link rel="preload" href="/assets/fonts/anton-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/orbitron-var-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/manrope-var-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/jetbrains-mono-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 
   <!-- Full-screen hero photo: fetch it early (browsers without AVIF skip this hint) -->
   <link rel="preload" as="image" type="image/avif" imagesrcset="/assets/img/hero-bg-720.avif 720w, /assets/img/hero-bg-1086.avif 1086w" imagesizes="100vw" fetchpriority="high">
 
-  <!-- Before first paint: saved theme, JS flag, entry-screen decision.
-       If the app has not started within 5 s, the motion classes are removed
-       so the pre-rendered content stays visible. -->
+  <!-- Before first paint: saved theme (so there is no flash of the wrong
+       theme), JS flag, entry-screen decision.
+       motion-pending keeps animated elements in their server-rendered start
+       state until React takes over. If the app has not started within 5 s
+       the classes are removed, so the pre-rendered content stays visible. -->
   <script>
     (function () {
       var d = document.documentElement;
@@ -58,13 +62,11 @@
         var t = localStorage.getItem('theme');
         if (t === 'light' || t === 'dark') d.setAttribute('data-theme', t);
       } catch (e) {}
+      d.classList.add('motion-pending');
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!reduce) {
-        d.classList.add('motion-pending');
-        // Entry screen ("View Portfolio" → boot sequence) on every visit,
-        // except deep links straight to a section
-        if (!location.hash) d.classList.add('show-preloader');
-      }
+      // Entry screen ("View Portfolio" → boot sequence) on every visit,
+      // except deep links straight to a section and reduced motion
+      if (!reduce && !location.hash) d.classList.add('show-preloader');
       setTimeout(function () {
         if (!window.__siteReady) {
           window.__failsafe = true;
