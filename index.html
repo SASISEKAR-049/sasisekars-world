@@ -48,7 +48,7 @@
   <link rel="preload" as="image" type="image/avif" imagesrcset="/assets/img/hero-color-720.avif 720w, /assets/img/hero-color-1086.avif 1086w" imagesizes="100vw" fetchpriority="high">
 
   <!-- Before first paint: saved theme (so there is no flash of the wrong
-       theme), JS flag, entry-screen decision.
+       theme) and JS flag.
        motion-pending keeps animated elements in their server-rendered start
        state until React takes over. If the app has not started within 5 s
        the classes are removed, so the pre-rendered content stays visible. -->
@@ -61,10 +61,7 @@
         if (t === 'light' || t === 'dark') d.setAttribute('data-theme', t);
       } catch (e) {}
       d.classList.add('motion-pending');
-      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      // Entry screen ("View Portfolio" → boot sequence) on every visit,
-      // except deep links straight to a section and reduced motion
-      if (!reduce && !location.hash) d.classList.add('show-preloader');
+      // Open the portfolio directly; an entry dialog must not cover the page.
       setTimeout(function () {
         if (!window.__siteReady) {
           window.__failsafe = true;

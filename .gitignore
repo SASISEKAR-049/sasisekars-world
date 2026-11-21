@@ -4,3 +4,6 @@ node_modules/
 # Build output (`npm run build`)
 dist/
 dist-ssr/
+
+# Local Netlify folder
+.netlify

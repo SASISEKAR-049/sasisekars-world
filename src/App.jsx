@@ -13,7 +13,6 @@ import Projects from './components/Projects.jsx';
 import Experience from './components/Experience.jsx';
 import Education from './components/Education.jsx';
 import { Contact, Footer } from './components/Contact.jsx';
-import Preloader from './components/Preloader.jsx';
 import { Cursor, EasterEgg, HeroBackground, NeuralCanvas, SectionBackdrop } from './components/Layers.jsx';
 
 export default function App() {
@@ -35,7 +34,6 @@ function Page() {
   const heroRef = useRef(null);
   return (
     <>
-      <Preloader />
       <a className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[300] focus:bg-accent focus:text-on-accent focus:px-4 focus:py-2" href="#main">Skip to content</a>
       <SectionBackdrop />
       <HeroBackground heroRef={heroRef} />
