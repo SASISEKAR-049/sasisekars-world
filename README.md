@@ -91,6 +91,7 @@ Copy `FeaturedCard` in `src/components/Projects.jsx` (or edit `comingSoon` in `c
 Run `npm run build` and publish `dist/`.
 
 - **Netlify / Vercel:** build command `npm run build`, output directory `dist`.
+- **Netlify:** `netlify.toml` configures these settings automatically. Publishing the repository root serves uncompiled JSX and leaves the UI blank; publish the generated `dist/` directory instead.
 - **GitHub Pages:** publish `dist/` (e.g. with a Pages workflow). URLs are relative (`base: './'`), so a sub-folder works.
 
 ---
